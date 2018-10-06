@@ -1,0 +1,64 @@
+<?php
+
+namespace BUBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Horaire
+ *
+ * @ORM\Table(name="horaire", indexes={@ORM\Index(name="IDX_BBC83DB64419DE7D", columns={"bibliotheque_id"})})
+ * @ORM\Entity
+ */
+class Horaire
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="jour", type="string", length=10, nullable=true)
+     */
+    private $jour;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="heure_ouverture", type="time", nullable=true)
+     */
+    private $heureOuverture;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="heure_fermeture", type="time", nullable=true)
+     */
+    private $heureFermeture;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="ouvert", type="boolean", nullable=false)
+     */
+    private $ouvert = '1';
+
+    /**
+     * @var \Bibliotheque
+     *
+     * @ORM\ManyToOne(targetEntity="Bibliotheque")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="bibliotheque_id", referencedColumnName="id")
+     * })
+     */
+    private $bibliotheque;
+
+
+}
+

@@ -1,0 +1,59 @@
+{% extends 'defaultMenuBar.html.twig' %}
+
+{% block title %}
+  Bibliothèque Ouverte - Messages
+{% endblock %}
+
+  {% block body %}     
+    <div style="width: 50%; margin: 0 auto;">     
+      <div class="well" style="margin-top: 100px">
+        <h1 style="color: #078cb5;">Message popup</h1><hr>      
+        {% form_theme form1 'bootstrap_3_layout.html.twig' %}
+        {{ form_start(form1) }}      
+          {{ form_widget(form1) }}
+        {{ form_end(form1) }}        
+      </div>   
+    </div>    
+
+    <div style="width: 50%; margin: 0 auto;">     
+      <div class="well" style="margin-top: 100px">
+        <h1 style="color: #078cb5;">Messages en cours</h1><hr>      
+        {% form_theme form2 'bootstrap_3_layout.html.twig' %}
+        {{ form_start(form2) }} 
+          <div class="js-genus-scientist-wrapper">  
+          {% for message in form2.messages %}
+            <div class="js-genus-scientist-item">
+              <a href="#" class="js-remove-scientist pull-right">
+                <span class="fa fa-close"></span>
+              </a> 
+              {{ form_widget(message) }}  
+              <hr>               
+            </div>                                           
+          {% endfor %}             
+          </div>
+        {{ form_end(form2) }}        
+      </div>   
+    </div>  
+  {% endblock %}  
+
+
+
+
+  {% block javascripts %}
+    {{ parent() }}  
+
+    <script type="text/javascript">
+
+    jQuery(document).ready(function() {
+            var $wrapper = $('.js-genus-scientist-wrapper');
+            $wrapper.on('click', '.js-remove-scientist', function(e) {
+                e.preventDefault();
+                $(this).closest('.js-genus-scientist-item')
+                    .fadeOut()
+                    .remove();
+            });
+    });
+
+    </script>
+
+  {% endblock javascripts %}

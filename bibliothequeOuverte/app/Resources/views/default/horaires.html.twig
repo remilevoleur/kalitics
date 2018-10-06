@@ -1,0 +1,163 @@
+{% import _self as formMacros %}
+
+{% macro printForm2(horaireExceptionnel) %}
+  <tr class="js-genus-scientist-item">                             
+      <td style="text-align: center;">{{ form_widget(horaireExceptionnel.jourDebut) }}</td> 
+      <td style="text-align: center;">{{ form_widget(horaireExceptionnel.jourFin) }}</td> 
+      <td style="text-align: center;">{{ form_widget(horaireExceptionnel.heureOuverture) }}</td>   
+      <td style="text-align: center;">{{ form_widget(horaireExceptionnel.heureFermeture) }}</td>  
+      <td style="text-align: center;">{{ form_widget(horaireExceptionnel.ouvert) }}</td>   
+      <td>
+        <a href="#" class="js-remove-scientist pull-right">
+          <span class="fa fa-close"></span>
+        </a>
+      </td>
+  </tr>
+{% endmacro %}
+
+{% extends 'defaultMenuBar.html.twig' %}
+
+{% block title %}
+  Bibliothèque Ouverte - Horaires
+{% endblock %}
+
+  {% block body %}     
+    <div style="width: 60%; margin: 0 auto;">     
+      <div class="well" style="margin-top: 100px">
+        <h1 style="color: #078cb5;">Horaires standards</h1><hr>      
+        {% form_theme form1 'bootstrap_3_layout.html.twig' %}
+        {{ form_start(form1) }}      
+            {% spaceless %}
+              <table class="table table-condensed" id="liste">
+                  <thead>
+                        <th style="text-align: center;">Lundi</th>
+                        <th style="text-align: center;">Mardi</th>
+                        <th style="text-align: center;">Mercredi</th>
+                        <th style="text-align: center;">Jeudi</th>
+                        <th style="text-align: center;">Vendredi</th>
+                        <th style="text-align: center;">Samedi</th>
+                        <th style="text-align: center;">Dimanche</th>
+                  </thead>
+                  <tbody>                       
+                      
+                          <tr>
+                              {% for horaire in form1.horaires %}
+                              <td>{{ form_widget(horaire.heureOuverture) }}</td>                                                  
+                              {% endfor %}
+                          </tr>
+                          <tr>
+                              {% for horaire in form1.horaires %}
+                              <td>{{ form_widget(horaire.heureFermeture) }}</td>                                                  
+                              {% endfor %}
+                          </tr>
+                          <tr>
+                              {% for horaire in form1.horaires %}
+                              <td style="text-align: center;">{{ form_widget(horaire.ouvert) }}</td>                                                  
+                              {% endfor %}
+                          </tr>
+                      
+                  </tbody>
+              </table>
+            {% endspaceless %}
+        {{ form_end(form1) }}        
+      </div>   
+      <div class="well" style="margin-top: 100px">
+        <h1 style="color: #078cb5;">Horaires exceptionnels</h1><hr>      
+        {% form_theme form2 'bootstrap_3_layout.html.twig' %}
+        {{ form_start(form2) }}     
+            {% spaceless %}
+            <ul class="horairesExceptionnel" data-prototype="{{ formMacros.printForm2(form2.horairesExceptionnel.vars.prototype)|e('html_attr') }}">  
+              <table class="table table-condensed" id="liste">
+                  <thead>
+                        <th style="text-align: center;">Date début</th>
+                        <th style="text-align: center;">Date fin</th>
+                        <th style="text-align: center;">Horaire d'ouverture</th>
+                        <th style="text-align: center;">Horaire de fermeture</th>
+                        <th style="text-align: center;">Ouvert</th>
+
+                  </thead>
+                  <tbody id="horairesExceptionnel" class="row js-genus-scientist-wrapper"> 
+                    {% for horaireExceptionnel in form2.horairesExceptionnel %}  
+                      {{ formMacros.printForm2(horaireExceptionnel) }}
+                    {% endfor %}                     
+                  </tbody>
+              </table>
+            </ul>
+            {% endspaceless %}                            
+        {{ form_end(form2) }}     
+      </div>   
+    </div>    
+  {% endblock %}  
+
+
+
+
+  {% block javascripts %}
+    {{ parent() }}   
+
+    <script type="text/javascript">
+
+    var $collectionHolder;
+
+    // setup an "add a tag" link
+    var $addhorairesExceptionnelLink = $('<a href="#" class="add_horairesExceptionnel_link fa fa-plus-circle"> Ajouter</a>');
+    var $newLinkLi = $('<li></li>').append($addhorairesExceptionnelLink);
+
+    jQuery(document).ready(function() {
+        // Get the ul that holds the collection of tags
+        $collectionHolder = $('ul.horairesExceptionnel');
+
+        // add the "add a tag" anchor and li to the tags ul
+        $collectionHolder.append($addhorairesExceptionnelLink);
+
+        // count the current form inputs we have (e.g. 2), use that as the new
+        // index when inserting a new item (e.g. 2)
+        $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+        $addhorairesExceptionnelLink.on('click', function(e) {
+            // prevent the link from creating a "#" on the URL
+            e.preventDefault();
+
+            // add a new tag form (see next code block)
+            addhorairesExceptionnelForm($collectionHolder, $addhorairesExceptionnelLink);
+        });
+    });
+
+    function addhorairesExceptionnelForm($collectionHolder, $addhorairesExceptionnelLink) {
+        // Get the data-prototype explained earlier
+        var prototype = $collectionHolder.data('prototype');
+
+        // get the new index
+        var index = $collectionHolder.data('index');
+
+        var newForm = prototype;
+        // You need this only if you didn't set 'label' => false in your tags field in TaskType
+        // Replace '__name__label__' in the prototype's HTML to
+        // instead be a number based on how many items we have
+        // newForm = newForm.replace(/__name__label__/g, index);
+
+        // Replace '__name__' in the prototype's HTML to
+        // instead be a number based on how many items we have
+        newForm = newForm.replace(/__name__/g, index);
+
+        // increase the index with one for the next item
+        $collectionHolder.data('index', index + 1);
+
+        // Display the form in the page in an li, before the "Add a tag" link li
+        var $newFormLi = $('<li></li>').append(newForm);
+        $("#horairesExceptionnel").append(newForm);
+    } 
+
+    jQuery(document).ready(function() {
+            var $wrapper = $('.js-genus-scientist-wrapper');
+            $wrapper.on('click', '.js-remove-scientist', function(e) {
+                e.preventDefault();
+                $(this).closest('.js-genus-scientist-item')
+                    .fadeOut()
+                    .remove();
+            });
+    });
+
+    </script>
+
+  {% endblock javascripts %}

@@ -1,0 +1,61 @@
+<?php
+
+namespace BUBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Ressource
+ *
+ * @ORM\Table(name="ressource")
+ * @ORM\Entity
+ */
+class Ressource
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=30, nullable=true)
+     */
+    private $type;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom", type="string", length=20, nullable=false)
+     */
+    private $nom;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=100, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="duree_max_reservation", type="integer", nullable=false)
+     */
+    private $dureeMaxReservation;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="bibliotheque", type="integer", nullable=true)
+     */
+    private $bibliotheque;
+
+
+}
+

@@ -1,0 +1,344 @@
+<?php
+
+namespace Application\Sonata\UserBundle\Entity;
+
+use Sonata\UserBundle\Entity\BaseUser as BaseUser;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Table("fos_user_user")
+ * @ORM\Entity
+ */
+class User extends BaseUser
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="validations", type="smallint")
+     */
+    private $validations = 0;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="annulations", type="smallint")
+     */
+    private $annulations = 0;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="long", type="string", length=50)
+     */
+    private $long;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="lat", type="string", length=50)
+     */
+    private $lat;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Etablissement")
+     * @ORM\JoinTable(name="gerants_etablissements",
+     *      joinColumns={@ORM\JoinColumn(name="gerant_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="etablissement_id", referencedColumnName="id", unique=true)}
+     *      )
+     */
+    private $etablissements;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Specialite")
+     * @ORM\JoinColumn(name="specialite_id", referencedColumnName="id", nullable=true)
+     */
+    private $specialite;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Diplome")
+     * @ORM\JoinTable(name="personnels_diplomes",
+     *      joinColumns={@ORM\JoinColumn(name="personnel_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="diplome_id", referencedColumnName="id", unique=true)}
+     *      )
+     */
+    private $diplomes;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Disponibilite")
+     * @ORM\JoinTable(name="personnels_disponibilites",
+     *      joinColumns={@ORM\JoinColumn(name="personnel_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="disponibilite_id", referencedColumnName="id", unique=true)}
+     *      )
+     */
+    private $disponibilites;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Candidature", mappedBy="personnel")
+     */
+    private $candidatures;
+
+
+    /**
+     * Get id.
+     *
+     * @return int $id
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setEmail($email)
+    {
+        $email = is_null($email) ? '' : $email;
+        parent::setEmail($email);
+        $this->setUsername($email);
+
+        return $this;
+    }
+
+    /**
+     * Set validations.
+     *
+     * @param int $validations
+     *
+     * @return User
+     */
+    public function setValidations($validations)
+    {
+        $this->validations = $validations;
+
+        return $this;
+    }
+
+    /**
+     * Get validations.
+     *
+     * @return int
+     */
+    public function getValidations()
+    {
+        return $this->validations;
+    }
+
+    /**
+     * Set annulations.
+     *
+     * @param int $annulations
+     *
+     * @return User
+     */
+    public function setAnnulations($annulations)
+    {
+        $this->annulations = $annulations;
+
+        return $this;
+    }
+
+    /**
+     * Get annulations.
+     *
+     * @return int
+     */
+    public function getAnnulations()
+    {
+        return $this->annulations;
+    }
+
+    /**
+     * Add etablissement.
+     *
+     * @param \AppBundle\Entity\Etablissement $etablissement
+     *
+     * @return User
+     */
+    public function addEtablissement(\AppBundle\Entity\Etablissement $etablissement)
+    {
+        $this->etablissements[] = $etablissement;
+
+        return $this;
+    }
+
+    /**
+     * Remove etablissement.
+     *
+     * @param \AppBundle\Entity\Etablissement $etablissement
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeEtablissement(\AppBundle\Entity\Etablissement $etablissement)
+    {
+        return $this->etablissements->removeElement($etablissement);
+    }
+
+    /**
+     * Get etablissements.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEtablissements()
+    {
+        return $this->etablissements;
+    }
+
+    /**
+     * Set specialite.
+     *
+     * @param \AppBundle\Entity\Specialite|null $specialite
+     *
+     * @return User
+     */
+    public function setSpecialite(\AppBundle\Entity\Specialite $specialite = null)
+    {
+        $this->specialite = $specialite;
+
+        return $this;
+    }
+
+    /**
+     * Get specialite.
+     *
+     * @return \AppBundle\Entity\Specialite|null
+     */
+    public function getSpecialite()
+    {
+        return $this->specialite;
+    }
+
+    /**
+     * Add diplome.
+     *
+     * @param \AppBundle\Entity\Diplome $diplome
+     *
+     * @return User
+     */
+    public function addDiplome(\AppBundle\Entity\Diplome $diplome)
+    {
+        $this->diplomes[] = $diplome;
+
+        return $this;
+    }
+
+    /**
+     * Remove diplome.
+     *
+     * @param \AppBundle\Entity\Diplome $diplome
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeDiplome(\AppBundle\Entity\Diplome $diplome)
+    {
+        return $this->diplomes->removeElement($diplome);
+    }
+
+    /**
+     * Get diplomes.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDiplomes()
+    {
+        return $this->diplomes;
+    }
+
+    /**
+     * Add disponibilite.
+     *
+     * @param \AppBundle\Entity\Disponibilite $disponibilite
+     *
+     * @return User
+     */
+    public function addDisponibilite(\AppBundle\Entity\Disponibilite $disponibilite)
+    {
+        $this->disponibilites[] = $disponibilite;
+
+        return $this;
+    }
+
+    /**
+     * Remove disponibilite.
+     *
+     * @param \AppBundle\Entity\Disponibilite $disponibilite
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeDisponibilite(\AppBundle\Entity\Disponibilite $disponibilite)
+    {
+        return $this->disponibilites->removeElement($disponibilite);
+    }
+
+    /**
+     * Get disponibilites.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDisponibilites()
+    {
+        return $this->disponibilites;
+    }
+
+    /**
+     * Add candidature.
+     *
+     * @param \AppBundle\Entity\Candidature $candidature
+     *
+     * @return User
+     */
+    public function addCandidature(\AppBundle\Entity\Candidature $candidature)
+    {
+        $this->candidatures[] = $candidature;
+
+        return $this;
+    }
+
+    /**
+     * Remove candidature.
+     *
+     * @param \AppBundle\Entity\Candidature $candidature
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeCandidature(\AppBundle\Entity\Candidature $candidature)
+    {
+        return $this->candidatures->removeElement($candidature);
+    }
+
+    /**
+     * Get candidatures.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCandidatures()
+    {
+        return $this->candidatures;
+    }
+
+    /**
+     * Get demandes qui pourraient intéresser l'utilisateur.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDemandes()
+    {
+        $disponibilites = $this->getDisponibilites();
+        $adresses = new \Doctrine\Common\Collections\ArrayCollection();
+        $adresses->add($this->adresse);
+
+        foreach ($disponibilites as $disponibilite) {
+            if (!$adresses->contains($disponibilite->getAdresse())){
+                $adresses->add($disponibilite->getAdresse());
+            }
+        }
+
+        return $this->candidatures;
+    }
+}

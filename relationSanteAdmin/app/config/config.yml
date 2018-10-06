@@ -1,0 +1,174 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: fr
+    sonata.user.admin.user.class: Application\Sonata\Admin\UserAdmin
+
+framework:
+    #esi: ~
+    translator: { fallbacks: ['%locale%'] }
+    secret: '%secret%'
+    router:
+        resource: '%kernel.project_dir%/app/config/routing.yml'
+        strict_requirements: ~
+    form: ~
+    csrf_protection: ~
+    validation: { enable_annotations: true }
+    #serializer: { enable_annotations: true }
+    default_locale: '%locale%'
+    trusted_hosts: ~
+    session:
+        # https://symfony.com/doc/current/reference/configuration/framework.html#handler-id
+        handler_id: session.handler.native_file
+        save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
+    fragments: ~
+    http_method_override: true
+    assets: ~
+    php_errors:
+        log: true
+    templating:
+        engines: ['twig']
+
+# Twig Configuration
+twig:
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver: pdo_mysql
+        host: '%database_host%'
+        port: '%database_port%'
+        types:
+            json: Sonata\Doctrine\Types\JsonType
+        dbname: '%database_name%'
+        user: '%database_user%'
+        password: '%database_password%'
+        charset: UTF8
+        # if using pdo_sqlite as your database driver:
+        #   1. add the path in parameters.yml
+        #     e.g. database_path: '%kernel.project_dir%/var/data/data.sqlite'
+        #   2. Uncomment database_path in parameters.yml.dist
+        #   3. Uncomment next line:
+        #path: '%database_path%'
+
+    orm:
+        entity_managers:
+            default:
+                mappings:
+                    SonataUserBundle: ~
+                    FOSUserBundle: ~
+                    ApplicationSonataUserBundle:
+                        type: annotation
+                    AppBundle: ~
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport: '%mailer_transport%'
+    host: '%mailer_host%'
+    port: '%mailer_port%'
+    username: '%mailer_user%'
+    password: '%mailer_password%'
+    encryption: '%mailer_encryption%'
+
+knp_menu:
+    # use "twig: false" to disable the Twig extension and the TwigRenderer
+    twig:
+        template: ::knp_menu.html.twig
+    #  if true, enables the helper for PHP templates
+    templating: false
+    # the renderer to use, list is also available by default
+    default_renderer: twig
+
+fos_user:
+    db_driver: orm # other valid values are 'mongodb' and 'couchdb'
+    firewall_name: main
+    user_class: Application\Sonata\UserBundle\Entity\User
+    group:
+        group_class: Application\Sonata\UserBundle\Entity\Group
+        group_manager: sonata.user.orm.group_manager 
+    service:
+        user_manager: sonata.user.orm.user_manager
+    from_email:
+        address: "%mailer_user%"
+        sender_name: "%mailer_user%"
+    registration:
+        confirmation:
+            enabled: true
+
+sonata_block:
+    default_contexts: [cms]
+    blocks:
+        # enable the SonataAdminBundle block
+        sonata.admin.block.admin_list:
+            contexts: [admin]
+        sonata.admin.block.search_result:
+            contexts: [admin]
+
+sonata_admin:
+    title:      Relation Sante
+    global_search:
+        empty_boxes: fade
+
+sonata_user:
+    class:
+        user: Application\Sonata\UserBundle\Entity\User
+        group: Application\Sonata\UserBundle\Entity\Group
+    security_acl: true
+    manager_type: orm # can be orm or mongodb
+
+sonata_doctrine_orm_admin:
+    # default value is null, so doctrine uses the value defined in the configuration
+    entity_manager: ~
+
+    audit:
+        force: true
+
+    templates:
+        form:
+            - "@SonataDoctrineORMAdmin/Form/form_admin_fields.html.twig"
+        filter:
+            - "@SonataDoctrineORMAdmin/Form/filter_admin_fields.html.twig"
+        types:
+            list:
+                array:      "@SonataAdmin/CRUD/list_array.html.twig"
+                boolean:    "@SonataAdmin/CRUD/list_boolean.html.twig"
+                date:       "@SonataAdmin/CRUD/list_date.html.twig"
+                time:       "@SonataAdmin/CRUD/list_time.html.twig"
+                datetime:   "@SonataAdmin/CRUD/list_datetime.html.twig"
+                text:       "@SonataAdmin/CRUD/base_list_field.html.twig"
+                trans:      "@SonataAdmin/CRUD/list_trans.html.twig"
+                string:     "@SonataAdmin/CRUD/base_list_field.html.twig"
+                smallint:   "@SonataAdmin/CRUD/base_list_field.html.twig"
+                bigint:     "@SonataAdmin/CRUD/base_list_field.html.twig"
+                integer:    "@SonataAdmin/CRUD/base_list_field.html.twig"
+                decimal:    "@SonataAdmin/CRUD/base_list_field.html.twig"
+                identifier: "@SonataAdmin/CRUD/base_list_field.html.twig"
+                currency:   "@SonataAdmin/CRUD/list_currency.html.twig"
+                percent:    "@SonataAdmin/CRUD/list_percent.html.twig"
+                choice:     "@SonataAdmin/CRUD/list_choice.html.twig"
+                url:        "@SonataAdmin/CRUD/list_url.html.twig"
+
+            show:
+                array:      "@SonataAdmin/CRUD/show_array.html.twig"
+                boolean:    "@SonataAdmin/CRUD/show_boolean.html.twig"
+                date:       "@SonataAdmin/CRUD/show_date.html.twig"
+                time:       "@SonataAdmin/CRUD/show_time.html.twig"
+                datetime:   "@SonataAdmin/CRUD/show_datetime.html.twig"
+                text:       "@SonataAdmin/CRUD/base_show_field.html.twig"
+                trans:      "@SonataAdmin/CRUD/show_trans.html.twig"
+                string:     "@SonataAdmin/CRUD/base_show_field.html.twig"
+                smallint:   "@SonataAdmin/CRUD/base_show_field.html.twig"
+                bigint:     "@SonataAdmin/CRUD/base_show_field.html.twig"
+                integer:    "@SonataAdmin/CRUD/base_show_field.html.twig"
+                decimal:    "@SonataAdmin/CRUD/base_show_field.html.twig"
+                currency:   "@SonataAdmin/CRUD/base_currency.html.twig"
+                percent:    "@SonataAdmin/CRUD/base_percent.html.twig"
+                choice:     "@SonataAdmin/CRUD/show_choice.html.twig"
+                url:        "@SonataAdmin/CRUD/show_url.html.twig"

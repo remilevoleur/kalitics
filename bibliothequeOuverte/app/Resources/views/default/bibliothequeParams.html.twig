@@ -1,0 +1,225 @@
+{% extends 'defaultMenuBar.html.twig' %}
+
+{% block title %}
+  Bibliothèque Ouverte - Parametres
+{% endblock %}
+
+  {% block body %}     
+    <div style="width: 50%; margin: 0 auto;">     
+      <div class="well" style="margin-top: 100px">
+        <h1 style="color: #078cb5;">Informations obligatoires</h1><hr>      
+        {% form_theme form1 'bootstrap_3_layout.html.twig' %}
+        {{ form_start(form1) }}      
+            {{ form_widget(form1) }}
+        {{ form_end(form1) }}
+      </div>
+
+      <div class="well">
+        <h1 style="color: #078cb5;">Informations supplémentaires</h1><hr>     
+        {% form_theme form2 'bootstrap_3_layout.html.twig' %}
+        {{ form_start(form2) }}      
+            {{ form_widget(form2) }}
+        {{ form_end(form2) }}
+      </div>
+
+      <div class="well">
+        <h1  style="color: #078cb5;">Services</h1><hr>
+        {% form_theme form3 'bootstrap_3_layout.html.twig' %}
+        {{ form_start(form3) }}      
+            {{ form_widget(form3) }}
+        {{ form_end(form3) }}
+      </div>
+
+      <script src="{{ asset('dropzone/dropzone.js') }}"></script>
+    
+      <div class="well">
+        <h1 style="color: #078cb5;">Photos</h1><hr>
+        {#{{ form_start(form) }}#}
+        {#{{ form_widget(form) }}#}
+          <div class="dropzone"></div>
+        {#{{ form_end(form) }}#}
+        <div style="">
+          {% for photo in bibliotheque.photos %}
+          <div style="position: relative; width: 15%; display: inline-block; margin: 10px">
+            <a href="{{ path('deletephoto', {'idBibliotheque': bibliotheque.id, 'idPhoto': photo.id}) }}" class="btn btn-primary btn-sm">          
+              <img class="photo" src="{{ asset('uploads/' ~ photo.nom) }}" width="100%" height="100%" title="Supprimer">                                    
+              <i class="glyphicon glyphicon-remove" style="color: red; position: absolute; right: auto; top: 0;"></i>
+            </a>          
+          </div>        
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="well">
+        <h1 style="color: #078cb5;">Localisation</h1><hr>     
+        {% form_theme form4 'bootstrap_3_layout.html.twig' %}
+        {{ form_start(form4, {'attr': {'id': 'form4'}}) }}      
+          {{ form_widget(form4.adresse, { 'attr': {'class': 'controls', 'onkeypress': 'return event.keyCode!=13'} }) }}   
+          <div id="map"></div><br>        
+        {{ form_end(form4) }}                
+      </div>
+
+    </div>    
+  {% endblock %}  
+
+
+
+
+  {% block javascripts %}
+    {{ parent() }}    
+
+    <script>     
+
+      function initMap() {
+        geocoder = new google.maps.Geocoder();
+        geocoder.geocode({
+            'address': "{{ bibliotheque.adresse }}"
+        }, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                var myOptions = {
+                    zoom: 15,
+                    center: results[0].geometry.location,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                }
+                map = new google.maps.Map(document.getElementById("map"), myOptions);
+
+                var markers = [];
+
+                markers.push(new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location
+                }));
+
+                var input = document.getElementById('form4_adresse');
+                var searchBox = new google.maps.places.SearchBox(input);
+                map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+                map.addListener('bounds_changed', function() {
+                searchBox.setBounds(map.getBounds());
+
+                searchBox.addListener('places_changed', function() {
+                  var places = searchBox.getPlaces();
+
+                  if (places.length == 0) {
+                    return;
+                  }
+
+                  // Clear out the old markers.
+                  markers.forEach(function(marker) {
+                    marker.setMap(null);
+                  });
+                  markers = [];
+
+                  // For each place, get the icon, name and location.
+                  var bounds = new google.maps.LatLngBounds();
+                  places.forEach(function(place) {
+                    if (!place.geometry) {
+                      console.log("Returned place contains no geometry");
+                      return;
+                    }
+                    var icon = {
+                      url: place.icon,
+                      size: new google.maps.Size(71, 71),
+                      origin: new google.maps.Point(0, 0),
+                      anchor: new google.maps.Point(17, 34),
+                      scaledSize: new google.maps.Size(25, 25)
+                    };
+
+                    // Create a marker for each place.
+                    markers.push(new google.maps.Marker({
+                      map: map,
+                      icon: icon,
+                      title: place.name,
+                      position: place.geometry.location
+                    }));
+
+                    if (place.geometry.viewport) {
+                      // Only geocodes have viewport.
+                      bounds.union(place.geometry.viewport);
+                    } else {
+                      bounds.extend(place.geometry.location);
+                    }
+                  });
+                  map.fitBounds(bounds);
+                });
+              });
+            }
+        });
+      }                    
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCunL8j2EQrzPqH5XvCDuoMjNJvpljtR8Q&callback=initMap&libraries=places">
+    </script>
+
+    <style>
+      #map {
+        height: 400px;
+        width: 100%;
+       }
+
+       .controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      #form4_adresse {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 40%;
+      }
+
+      #form4_adresse:focus {
+        border-color: #4d90fe;
+      }
+
+      .pac-container {
+        font-family: Roboto;
+      }
+
+      #type-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+      }
+
+      #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+
+    </style>
+
+    <script>
+        Dropzone.autoDiscover = false;
+        var dropzone_default = new Dropzone(".dropzone", {
+            url: '{{ path('fileuploadhandler', {'id': bibliotheque.id}) }}' ,
+            acceptedFiles: 'image/*',
+            maxFilesize: 10,  // in Mb
+            init: function () {
+                this.on("maxfilesexceeded", function(file) {
+                    this.removeFile(file);
+                });
+                this.on("sending", function(file, xhr, formData) {
+                    // send additional data with the file as POST data if needed.
+                    // formData.append("key", "value");  
+                });
+                this.on("success", function(file, response) {
+                    if (response.uploaded) 
+                        alert('File Uploaded: ' + response.fileName);
+                });
+            }
+        });
+    </script>
+  {% endblock javascripts %}

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Accueil{% endblock %}</title>   
+        <link rel="stylesheet" href="{{ asset('lib/bootstrap/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('lib/font-awesome/css/font-awesome.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('lib/dropzone/dropzone.css') }}">
+             
+        <script src="{{ asset('lib/dropzone/dropzone.js') }}"></script> 
+        <script src="{{ asset('lib/js/jquery-1.11.1.min.js') }}"></script>
+        <script src="{{ asset('lib/bootstrap/js/bootstrap.min.js') }}"></script>
+    </head>
+    <body>
+        <div class="navbar navbar-default" data-offset-top="" data-spy="affix" id="barre_menu">
+            <div class="container-fluid">
+                {# Brand and toggle get grouped for better mobile display #}
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#admin-navbar-collapse-1">
+                          <span class="sr-only">Toggle navigation</span>
+                          <span class="icon-bar"></span>
+                          <span class="icon-bar"></span>
+                          <span class="icon-bar"></span>
+                    </button>
+                    <a href="{{ path('homepage') }}">
+                      <img src="{{ asset('logo/logo_menu.png') }}" class="logo-navbar logo" alt="Technique PC" style="height: 80px;">
+                    </a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="admin-navbar-collapse-1">
+                        {{ knp_menu_render('main') }}
+                        {{ knp_menu_render('user') }}
+                </div>
+            </div>
+        </div> 
+        <div class="background_accueil">
+        </div>       
+        {% block body %}
+
+        {% endblock %}
+        
+    </body>
+    {% block stylesheets %}
+
+        <style type="text/css">
+
+            html
+            {
+                height: 200%;
+            }
+
+            .affix-top {
+                position: absolute;
+                z-index: 10;
+                left: 0;
+                right: 0;
+                margin-left: auto;
+                margin-right: auto;
+                background-color: transparent !important;
+                border: unset;
+                -webkit-transition: all 1000ms ease-in-out;
+                -ms-transition: all 1000ms ease-in-out;
+                transition: all 1000ms ease-in-out;
+            }
+
+            .navbar-nav > li a {
+                font-size: inherit;
+                letter-spacing: 1px;
+                font-weight: 600;
+                display: inline-block;
+                padding-left: 5px;
+            }
+
+            .affix
+            {
+              top: 0 !important;
+              width: 100%;
+              z-index: 101;
+              left: 0;
+              right: 0;
+              margin-left: auto;
+              margin-right: auto;
+              border: unset !important;
+              border-radius: 0px !important;
+              background-color: black !important;
+              opacity: 0.8 !important;
+              -webkit-transition: all 1000ms ease-in-out;
+              -ms-transition: all 1000ms ease-in-out;
+              transition: all 1000ms ease-in-out;
+            }
+
+            .affix li.current a
+            {
+                color: white !important;
+            }
+
+            .affix .navbar-nav > li > a
+            {
+                color: white !important;
+            }            
+
+            .navbar-default {
+                opacity: 0.95;
+                font-family: 'Open Sans', 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                width: 100%;
+                background-color: transparent;
+                margin-bottom: 0px;
+                border-color: #ffffff;
+            }
+
+            .container-fluid {
+                width: 80%;
+                padding-left: 0;
+                padding-right: 20px;
+                margin-right: auto;
+                margin-left: auto;
+            }
+
+            .nav {
+                list-style: none;
+            }
+
+            .nav li > a {
+                display: inline-block;
+                padding-left: 5px;
+            }
+
+            .navbar-nav > li a {
+                font-size: medium;
+                letter-spacing: 1px;
+                font-weight: 600;
+            }
+
+            li .active {
+                background-color: initial;
+            }
+
+            .active .underline{
+                height: 3px;
+                background-color: rgb(0,180,100);
+                position: absolute;
+                bottom: 5px;
+                left: 3px;
+                width: 80%;
+            }
+
+            .underline{
+                height: 3px;
+                background-color: rgb(0,180,100);
+                position: absolute;
+                width: 0%;
+                left: 3px;
+                bottom: 5px;    
+                transition: width 100ms ease-in-out;            
+            }
+
+            .nav > li:hover .underline{
+                width: 80%;                
+            }
+
+            .navbar-right > li:hover .underline{
+                height: 0px;                
+            }
+
+            .current, .dot:hover {
+                background-color: #717171;
+            }
+
+            .navbar-default
+            {
+                font-family: 'Open Sans', 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                width: 100%;
+                margin-left: auto;
+                margin-right: auto;
+                margin-bottom: 0px;
+            }
+
+            .navbar-default .navbar-nav > li > a
+            {
+                color: white !important;
+                text-shadow: 0px 0px 2px black;
+            }
+
+            .navbar-nav > li a {
+              font-size: medium;
+              letter-spacing: 1px;
+              font-weight: 600;
+            }
+
+            li.current
+            {
+              background-color: initial;
+            }
+
+            .well > ul
+            {
+              list-style: none;
+            }
+
+            li.current_ancestor > a
+            {          
+              color: black !important;
+            }
+
+            li a
+            {
+              background-color: initial !important;
+            }
+
+            li a:hover
+            {
+              color: black !important;
+            }
+
+            .nav li > a
+            {
+              display: inline-block;
+              padding-left: 5px;
+            }
+
+            .fa-user::before {
+                color: rgb(115,185,100);
+            }
+
+            .navbar-nav > li a {
+                font-size: medium;
+                letter-spacing: 1px;
+                font-weight: 600;
+            }
+
+            .dropdown-menu li > a {
+                margin-left: 3px;
+                padding: 3px 0px;
+            }
+
+            .fa-sign-in::before {
+                color: rgb(115,185,100);
+                margin-left: 3px;
+            }
+
+            .fa-sign-out::before {
+                color: rgb(115,185,100);
+                margin-left: 3px;
+            }
+
+            .background_accueil
+            {
+                background-image: url("/relationsante/web/logo/accueil.png");
+                height: 540px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+            }
+
+            .dropdown-menu
+            {
+                padding: 10px;
+            }
+
+            .navbar-nav.navbar-right
+            {
+                margin-left: 0;
+            }
+
+            .navbar-nav
+            {
+                margin-left: 35%;
+                margin-top: 12px;
+            }
+
+
+        </style>
+
+    {% endblock %}
+
+    {% block javascripts %}
+
+        <script type="text/javascript">
+
+            $(function(){
+                var portfolioPos = $('#barre_menu').offset().top;
+                $('#barre_menu').affix({offset: {top: portfolioPos} });
+            });
+
+        </script>
+
+    {% endblock %}
+</html>

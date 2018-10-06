@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>    
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ asset('dropzone/dropzone.css') }}">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+
+
+    {% block style %}{% endblock %}
+    <style type="text/css">
+        
+
+        <!---->
+        .navigation {
+            height: auto;
+            width: auto;
+            height: 50px;
+        }
+        .logo {
+            font-weight: bold;
+            color: deepskyblue;
+            height: auto;
+            width: auto;
+            max-height: 80px;
+            max-width: 140px;
+            margin-top: -15px;
+            margin-left: -15px;
+        }
+
+        #labelPortail{
+            font-weight: bold;
+            color: #4FACC9;
+            margin-left: -20px;
+        }
+
+        .nav-side-menu {
+            overflow: auto;
+            font-family: verdana;
+            font-size: 12px;
+            font-weight: 200;
+            background-color: #4FACC9;
+            position: fixed;
+            top: 0px;
+            width: 250px;
+            height: 100%;
+            margin-top: 50px;
+        }
+
+        .nav-side-menu .brand {
+            background-color: #1F6986;
+            line-height: 50px;
+            display: block;
+            text-align: center;
+            font-size: 14px;
+        }
+        .nav-side-menu .toggle-btn {
+            display: none;
+        }
+
+        .nav-side-menu ul,
+        .nav-side-menu li {
+            list-style: none;
+            padding: 0px;
+            margin: 0px;
+            line-height: 50px;
+            cursor: pointer;
+        }
+
+        .nav-side-menu ul :not(collapsed) .arrow:before,
+        .nav-side-menu li :not(collapsed) .arrow:before {
+            font-family: FontAwesome;
+            content: "\f078";
+            display: inline-block;
+            padding-left: 10px;
+            padding-right: 10px;
+            vertical-align: middle;
+            float: right;
+        }
+
+        .nav-side-menu ul .active,
+        .nav-side-menu li .active {
+            border-left: 3px solid #1F6986;
+            background-color: #1F6986;
+        }
+        .nav-side-menu ul .sub-menu li.active,
+        .nav-side-menu li .sub-menu li.active {
+            color: #078CB5;
+        }
+        .nav-side-menu ul .sub-menu li.active a,
+        .nav-side-menu li .sub-menu li.active a {
+            color: #078CB5;
+        }
+        .nav-side-menu ul .sub-menu li,
+        .nav-side-menu li .sub-menu li {
+            background-color: #078CB5;
+            border: none;
+            line-height: 28px;
+            border-bottom: 1px solid #23282e;
+            margin-left: 0px;
+        }
+        .nav-side-menu ul .sub-menu li:hover,
+        .nav-side-menu li .sub-menu li:hover {
+            background-color: #4FACC9;
+        }
+        .nav-side-menu ul .sub-menu li:before,
+        .nav-side-menu li .sub-menu li:before {
+            font-family: FontAwesome;
+            content: "\f105";
+            display: inline-block;
+            padding-left: 10px;
+            padding-right: 10px;
+            vertical-align: middle;
+        }
+        .nav-side-menu li {
+            padding-left: 0px;
+            border-left: 3px solid #2e353d;
+            border-bottom: 1px solid #23282e;
+        }
+        .nav-side-menu li a {
+            text-decoration: none;
+            color: #e1ffff;
+        }
+        .nav-side-menu li a i {
+            padding-left: 10px;
+            width: 20px;
+            padding-right: 20px;
+        }
+        .nav-side-menu li:hover {
+            border-left: 3px solid #d19b3d;
+            background-color: #4f5b69;
+            -webkit-transition: all 1s ease;
+            -moz-transition: all 1s ease;
+            -o-transition: all 1s ease;
+            -ms-transition: all 1s ease;
+            transition: all 1s ease;
+        }
+        @media (max-width: 767px) {
+            .nav-side-menu {
+                position: relative;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .nav-side-menu .toggle-btn {
+                display: block;
+                cursor: pointer;
+                position: absolute;
+                right: 10px;
+                top: 10px;
+                z-index: 10 !important;
+                padding: 3px;
+                background-color: #ffffff;
+                color: #000;
+                width: 40px;
+                text-align: center;
+            }
+            .brand {
+                text-align: left !important;
+                font-size: 22px;
+                padding-left: 20px;
+                line-height: 50px !important;
+            }
+        }
+        @media (min-width: 767px) {
+            .nav-side-menu .menu-list .menu-content {
+                display: block;
+            }
+        }
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .navbar-default {
+            background-color: #1F6986;
+            border-color: black;
+        }
+        
+        </style>
+        
+
+</head>
+
+<body>
+{% block body %}{% endblock %}
+
+<nav class="navbar navbar-default navbar-fixed-top navigation">
+    <div class="navbar-header">
+        <a class="navbar-brand topnav " href="{{ path('homepage') }}">
+            <img src="{{ asset('amu-logo.png') }}" class="logo-navbar logo" alt="AMU - Bibliothèque Ouverte">
+            <label id="labelPortail">Portail d'administration</label>
+        </a>
+    </div>
+</nav>
+
+{% if listBibliotheques is defined %}
+
+<div class="nav-side-menu">    
+
+    <div class="menu-list">
+
+        <ul id="menu-content" class="menu-content collapse out">
+
+            <li  data-toggle="collapse" data-target="#Bibliotheques" class="collapsed active">
+                <a href="#"><i class="fa fa-book"></i> Bibliothèques <span class="arrow"></span></a>
+            </li>
+
+            <ul class="sub-menu collapse" id="Bibliotheques">
+            
+            {% for bibliotheque in listBibliotheques %}
+                <li><a href="{{ path('bibliotheque', {'id': bibliotheque.id } ) }}">{{ bibliotheque.nomPrincipal }}</a></li>                
+            {% endfor %}            
+                <li><a href="{{ path('new') }}">Nouvelle bibliotheque</a></li> 
+            </ul>
+
+            {% if bibliotheque is defined %}
+
+            <li  data-toggle="collapse" data-target="#Administration" class="collapsed active">
+                <a href="#"><i class="fa fa-bank"></i> Administration <span class="arrow"></span></a>
+            </li>
+
+            <ul class="sub-menu collapse" id="Administration">
+                <li><a href="{{ path('bibliotheque', {'id': bibliotheque.id } ) }}">Gérer les informations</a></li>
+                <li><a href="{{ path('horaire', {'id': bibliotheque.id } ) }}">Changer les horaires</a></li>
+                <li><a href="{{ path('message', {'id': bibliotheque.id } ) }}">Diffuser un message popup</a></li>
+            </ul>
+
+            <li  data-toggle="collapse" data-target="#Réservation" class="collapsed active">
+                <a href="#"><i class="fa fa-calendar-check-o"></i> Réservation <span class="arrow"></span></a>
+            </li>
+
+            <ul class="sub-menu collapse" id="Réservation">
+                <li><a href="{{ path('salle', {'id': bibliotheque.id } ) }}">Gérer les salles</a></li>
+            </ul>
+
+            {% endif %}
+
+        </ul>
+    </div>
+</div>
+
+{% endif %}
+
+</body>
+
+{% block javascripts %}
+
+{% endblock %}
+</html>
+

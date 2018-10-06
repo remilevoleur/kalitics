@@ -1,0 +1,246 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paramètres{% endblock %}
+
+{% block body %}  
+    {{ parent() }}  
+
+    <div id="content" class="content" style="text-align: center;">
+        <div style="width: 100%; padding-top: 20px;">        	
+        	{{ form_start(form1) }}            
+            {% form_theme form1 'bootstrap_4_layout.html.twig' %}                              	           
+				<div class="panel panel-default">
+					<div class="panel-heading"><h1 style="color: #078cb5;">Paramètres du site</h1></div>
+					<div class="panel-body">		            
+			            <fieldset class="col-xs-6">    	
+								<legend>Logo du menu</legend>							
+								<div class="panel panel-default">
+									<div class="panel-body">
+							            <div class="dropzone" id="logo_menu"></div>
+									</div>
+								</div>
+
+								<legend>Logo du site</legend>							
+								<div class="panel panel-default">
+									<div class="panel-body">
+							            <div class="dropzone" id="logo_site"></div>
+									</div>
+								</div>
+
+								<legend>Logo bouton help</legend>							
+								<div class="panel panel-default">
+									<div class="panel-body">
+							            <div style="width: 80%; margin: 1%; display: inline-block;" class="dropzone" id="logo_help"></div>
+									</div>
+								</div>
+
+								<legend>Fichier bouton help</legend>							
+								<div class="panel panel-default">
+									<div class="panel-body">
+							            {{ form_row(form1.fichierHelp) }}
+										<div style="width: 80%; margin: 1%; display: inline-block;" class="dropzone" id="fichier_help"></div>
+									</div>
+								</div>		    			
+							</fieldset>	
+							
+							<fieldset class="col-xs-6">    	
+								<legend>Gestion des e-mails</legend>							
+								<div class="panel panel-default">
+									<div class="panel-body">
+							            {{ form_row(form1.mailContact) }}
+							            {{ form_row(form1.mailDevis) }}
+									</div>
+								</div>
+
+								<legend>Bandeau alerte</legend>							
+								<div class="panel panel-default">
+									<div class="panel-body">
+						             	{{ form_row(form1.message) }}
+									</div>
+								</div>
+							</fieldset>
+							<div class="clearfix"></div>
+
+											
+							<fieldset class="pages_pos">    	
+								<legend>Position des pages</legend>							
+								<div class="panel panel-default">
+									<div class="panel-body">
+							            {{ form_row(form1.pages) }}
+									</div>
+								</div>
+							</fieldset>												
+		            </div>		                
+				</div>
+			{{ form_end(form1) }}	
+        </div>
+	        
+	        <script type="text/javascript">
+
+	        var dropzone_logo_menu = new Dropzone("#logo_menu", {
+	            url: '{{ path('logouploadhandler') }}' ,
+	            acceptedFiles: 'image/*',
+	            maxFilesize: 10,  // in Mb
+	            init: function () {
+	                this.on("maxfilesexceeded", function(file) {
+	                    this.removeFile(file);
+	                });
+	                this.on("sending", function(file, xhr, formData) {
+	                    // send additional data with the file as POST data if needed.
+	                    // formData.append("key", "value");  
+	                });
+	                this.on("success", function(file, response) {
+	                    if (response.uploaded)
+	                        alert('Logo envoyé : ' + response.fileName);
+	                });
+	            }
+	        });
+
+	        var dropzone_logo_site = new Dropzone("#logo_site", {
+	            url: '{{ path('logositeuploadhandler') }}' ,
+	            acceptedFiles: 'image/*',
+	            maxFilesize: 10,  // in Mb
+	            init: function () {
+	                this.on("maxfilesexceeded", function(file) {
+	                    this.removeFile(file);
+	                });
+	                this.on("sending", function(file, xhr, formData) {
+	                    // send additional data with the file as POST data if needed.
+	                    // formData.append("key", "value");  
+	                });
+	                this.on("success", function(file, response) {
+
+	                });
+	            }
+	        });
+
+	        var dropzone_logo_help = new Dropzone("#logo_help", {
+	            url: '{{ path('logohelpsiteuploadhandler') }}' ,
+	            acceptedFiles: 'image/*',
+	            maxFilesize: 10,  // in Mb
+	            init: function () {
+	                this.on("maxfilesexceeded", function(file) {
+	                    this.removeFile(file);
+	                });
+	                this.on("sending", function(file, xhr, formData) {
+	                    // send additional data with the file as POST data if needed.
+	                    // formData.append("key", "value");  
+	                });
+	                this.on("success", function(file, response) {
+
+	                });
+	            }
+	        });
+
+	        var dropzone_fichier_help = new Dropzone("#fichier_help", {
+	            url: '{{ path('fichierhelpsiteuploadhandler') }}' ,
+	            maxFilesize: 10000,  // in Mb
+	            init: function () {
+	                this.on("maxfilesexceeded", function(file) {
+	                    this.removeFile(file);
+	                });
+	                this.on("sending", function(file, xhr, formData) {
+	                    // send additional data with the file as POST data if needed.
+	                    // formData.append("key", "value");  
+	                });
+	                this.on("success", function(file, response) {
+	                	if (response.uploaded)
+                        	document.getElementById("{{ form1.fichierHelp.vars.id }}").setAttribute("value", response.fileName);
+	                });
+	            }
+	        });
+
+	        </script>
+
+    </div>     
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}  
+    <style type="text/css">
+
+	    .col-sm-2
+	    {
+	    	width: 13%;
+	    } 
+
+	    .row
+	    {
+	    	margin-right: unset;
+			margin-left: unset;
+	    }
+
+	    .js-genus-scientist-wrapper .js-genus-scientist-item:nth-of-type(even)
+	    {
+	        background-color: rgba(115,185,100,0.3) !important;
+	    }
+
+	    fieldset 
+		{
+			border: 1px solid #ddd !important;
+			margin: 0;
+			xmin-width: 0;
+			padding: 10px;       
+			position: relative;
+			border-radius:4px;
+			background-color:#f5f5f5;
+			padding-left:10px!important;
+		}	
+		
+		fieldset > legend
+		{
+			font-size:14px;
+			font-weight:bold;
+			margin-bottom: 0px; 
+			width: 35%; 
+			border: 1px solid #ddd;
+			border-radius: 4px; 
+			padding: 5px 5px 5px 10px; 
+			color: #078cb5;
+			background-color: rgba(115,185,100,0.3);
+		}
+
+		.pages_pos fieldset
+		{
+			margin-left: 2%;
+		}
+
+		.pages_pos > div > div > fieldset > div > fieldset
+		{
+			border-left: 1px solid rgb(68,111,169) !important;
+		}
+
+		.pages_pos > div > div > fieldset > div > fieldset > div > fieldset
+		{
+			border-left: 1px solid rgb(59,148,191) !important;	
+		}
+
+		.pages_pos > div > div > fieldset > div > fieldset > div > fieldset > div > fieldset
+		{
+			border-left: 1px solid rgb(102,186,227) !important;
+		}
+
+		.pages_pos > div > div > fieldset > div > fieldset > div > fieldset > div > fieldset > div > fieldset
+		{
+			border-left: 1px solid rgb(123,218,231) !important;
+		}
+
+		.pages_pos > div > div > fieldset > div > fieldset > div > fieldset > div > fieldset > div > fieldset > div > fieldset
+		{
+			border-left: 1px solid rgb(114,251,255) !important;
+		}
+
+		.pages_pos > div > div > fieldset > div > fieldset > div > fieldset > div > fieldset > div > fieldset > div > fieldset > div > fieldset
+		{
+			border-left: 1px solid rgb(255,255,255) !important;
+		}
+
+    </style>
+    
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+   
+{% endblock %}

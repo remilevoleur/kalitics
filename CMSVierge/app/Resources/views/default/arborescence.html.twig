@@ -1,0 +1,227 @@
+{% extends 'base.html.twig' %}
+
+{% import "macros/macros_arborescence.html.twig" as macros %}
+
+{% block title %}Arborescence{% endblock %}
+
+{% block body %}  
+    {{ parent() }}  
+
+    <div id="content" class="content" style="margin-top: 51px;">
+        <div style="width: 100%;">
+
+	        <div style="margin: 1%;">
+	        	<h2 style="display: inline-block;">Dossier courant :&#160</h2>
+	        	<h1 style="display: inline-block;">{{ dossierCourant.nom }}</h1>
+	    	</div>
+
+	    	{% if dossierParent is not null %}
+	    		<a href="{{ path('fichiers', {'id': dossierParent.id}) }}" class="fa fa-reply btn btn-primary" style="float: left; margin-left: 1%;"></a>	    		
+	    		<br><br>
+    		{% endif %}
+
+        	{% for dossierFils in dossiersFils %}
+        		<a href="{{ path('fichiers', {'id': dossierFils.id}) }}" class="fa fa-folder btn btn-warning" 
+        		style="float: left; margin-left: 1%;">
+        			{{ dossierFils.nom }}
+        		</a>
+
+        		{% if is_granted('ROLE_ADMIN') %}
+	        		<a href="{{ path('supprimer_dossier', {'id': dossierFils.id}) }}" class="btn btn-danger btn-sm" 
+	        		onclick="return avertissementSuppressionDossier()" style="position: absolute; left: 40%">
+			            <span class="fa fa-close"></span>
+			        </a>
+		        {% endif %}
+	    		<br><br>
+        	{% endfor %}
+
+        	<div id="liste_fichiers" style="line-height: 2;">
+	        	{% for fichier in fichiers %}
+	        		<a href="{{ asset('fichiers/' ~ fichier.nom) }}" class="fa fa-file btn btn-link" 
+	        		style="color: rgb(0,80,155); float: left; margin-left: 1%;">
+	        			{{ fichier.nom }}
+	        		</a>
+
+        			{% if is_granted('ROLE_ADMIN') %}
+		        		<a href="#" class="btn btn-light btn-sm" onclick="afficherInfoDiv(this)" 
+		        		style="display: inline-block; position: absolute; left: 35%">
+				            <span class="fa fa-info"></span>
+				        </a>
+				        <div id="lien_fichier_info" style="display: none; position: absolute; left: 20%;">
+				        	<input class="form-control" id="lien_fichier_info_texte" required="required" type="text" value="{{ fichier.nom }}"
+				        	style="display: inline-block; width: unset;">
+				        	<a href="#" onclick="infoFichier('{{ asset("fichiers/" ~ fichier.nom) }}', '{{ fichier.nom }}', this)" 
+				        	class="btn btn-success" id="lien_fichier_info_bouton">
+				              	Créer lien
+				            </a>
+			            </div>
+
+		        		<a href="{{ path('supprimer_fichier', {'id': fichier.id}) }}" class="btn btn-danger btn-sm" 
+		        		style="position: absolute; left: 40%">
+				            <span class="fa fa-close"></span>
+				        </a>
+			        {% endif %}
+		    		<br>
+	        	{% endfor %}
+        	</div>
+        	<br>
+
+        	{% if is_granted('ROLE_ADMIN') %}
+	        	<a href="#" id="bouton_nouveau_dossier" class="fa fa-plus-circle btn btn-success" onclick="creerDossier()" 
+	    		style="margin-left: 1%; margin-bottom: 1%;">
+	        	</a>
+	        	<div id="div_nouveau_dossier" style="display: none; margin-left: 1%; margin-bottom: 1%;">
+		        	<input class="form-control" style="display: inline-block; width: unset;" id="nom_dossier" required="required" type="text" value="">
+		        	<a href="{{ path('creer_dossier', {'dossierCourant': dossierCourant.id, 'nom': 'defaut'}) }}" onclick="nomDossier()" class="btn btn-success" id="bouton_creer_dossier">
+		              	Créer
+		            </a>
+	            </div>
+            {% endif %}
+
+            <div class="dropzone" id="fichier_upload" style="float: right; width: 50%"></div>
+
+            {% if is_granted('ROLE_ADMIN') %}
+            	<a href="#" class="btn btn-info btn-sm" onclick="afficherChangerMdp(this)" 
+        		style="display: inline-block; position: absolute; top: 0; right: 0;">
+		            <span class="fa fa-key"> Changer mot de passe</span>
+		        </a>
+            	<div id="changer_mdp" style="display: none; position: absolute; top: 0; right: 0;">
+		        	<input placeholder="Mot de passe" class="form-control" id="changer_mdp_input" required="required" type="password" value=""
+		        	style="display: block; width: unset;">
+		        	<input placeholder="Confirmation" class="form-control" id="changer_mdp_control" required="required" type="password" value=""
+		        	style="display: block; width: unset;">
+		        	<a href="{{ path('changer_mdp', {'mdp': 'defaut'}) }}" style="width: 100%;" 
+		        	class="btn btn-success" id="bouton_changer_mdp" onclick="return validatePassword()">
+		              	Changer
+		            </a>
+	            </div>
+            {% endif %}
+
+        </div>
+    </div>    
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}   
+
+    <link rel="stylesheet" href="{{ asset('dropzone/dropzone.css') }}"> 
+
+    <style type="text/css">
+      @font-face {
+          font-family: "Circe";
+          src: url({{ asset('fonts/Circe35.otf') }});
+        }
+        @font-face {
+          font-family: "Circe";
+          font-weight: bold;
+          src: url({{ asset('fonts/Circe-Bold.otf') }});
+        }
+        @font-face {
+          font-family: "Avenir";
+          src: url({{ asset('fonts/Avenir.ttc') }});
+        }
+
+        body {
+            font-family: "Avenir";
+            font-size: medium;            
+            background-repeat: no-repeat;
+            background-position-x: center;
+            background-attachment: fixed;
+            background-size: cover;
+            background-image: url({{ asset('uploads/' ~ bg) }});
+        }
+    </style>   
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+
+	    function creerDossier(){
+	        document.getElementById("div_nouveau_dossier").style["display"] = "inline-block";
+	        document.getElementById("bouton_nouveau_dossier").style["display"] = "none";
+	  	}
+
+	  	function nomDossier(){
+	        var nomDossier = document.getElementById("nom_dossier").value;
+	        var currentUrl = document.getElementById("bouton_creer_dossier").getAttribute("href");
+	        var newUrl = currentUrl.replace(new RegExp('[/]defaut$'), '/' + nomDossier);
+	        document.getElementById("bouton_creer_dossier").setAttribute("href", newUrl);
+	  	}
+
+  		Dropzone.autoDiscover = false;
+  		Dropzone.prototype.defaultOptions.dictDefaultMessage = "Glissez un fichier ici pour le déposer sur le serveur";
+	  	$(document).ready(function(){		  	
+	        var dropzone = new Dropzone("#fichier_upload", {
+	            url: "{{ path('fichier_upload', {'dossier': dossierCourant.id}) }}" ,
+	            maxFilesize: 10000,  // in Mb
+	            init: function () {
+	                this.on("maxfilesexceeded", function(file) {
+	                    this.removeFile(file);
+	                });
+	                this.on("sending", function(file, xhr, formData) {
+	                    // send additional data with the file as POST data if needed.
+	                    // formData.append("key", "value");  
+	                });
+	                this.on("success", function(file, response) {
+	                    if (response.uploaded){
+	                    	listeFichiers = document.getElementById("liste_fichiers");
+	                    	lien = document.createElement("a");
+	                    	lien.setAttribute("href", "{{ asset('fichiers/') }}" + response.filename);
+	                    	lien.setAttribute("class", "fa fa-file");
+	                    	lien.setAttribute("style", "float: left; margin-left: 1%;");
+	                    	lien.innerHTML = response.filename;
+
+	                    	listeFichiers.append(lien);
+	                    	listeFichiers.append(document.createElement("br"));
+	                    }
+	                });
+	            }
+	        });     
+        });
+
+        function avertissementSuppressionDossier(){
+	        return confirm("Etes-vous vraiment sûr de vouloir supprimer ce dossier (et tous les sous-dossiers"
+        		+ " et fichiers qu'il contient) ?");
+      	}
+
+      	function infoFichier(lienFichier, fichierNom, element){
+      		nom = document.getElementById("lien_fichier_info_texte").value;
+      		alert('Balise : <a href="' + lienFichier + '">' + nom + '</a>'
+      			+ '\nLien direct : ' + lienFichier
+      			+ '\nNom du fichier : ' + fichierNom
+      			);
+      		document.getElementById("lien_fichier_info").style["display"] = "none";
+      		element.parentElement.style["display"] = "none";
+      		element.parentElement.previousElementSibling.style["display"] = "inline-block";
+      	}
+
+      	function afficherInfoDiv(element){
+      		element.nextElementSibling.style["display"] = "inline-block";
+      		element.style["display"] = "none";
+      	}
+
+      	function afficherChangerMdp(element){
+      		element.nextElementSibling.style["display"] = "inline-block";
+      		element.style["display"] = "none";
+      	}      	
+
+		function validatePassword(){
+			var password = document.getElementById("changer_mdp_input");
+	  		var confirm_password = document.getElementById("changer_mdp_control");
+		  	if(password.value != confirm_password.value) {
+		    	confirm_password.setCustomValidity("Passwords Don't Match");
+		    	alert("Mots de passe non identiques. Veuillez réessayer.")
+		    	return false;
+		  	} else {
+		    	confirm_password.setCustomValidity('');
+		        var currentUrl = document.getElementById("bouton_changer_mdp").getAttribute("href");
+		        var newUrl = currentUrl.replace(new RegExp('[/]defaut$'), '/' + password.value);
+		        document.getElementById("bouton_changer_mdp").setAttribute("href", newUrl);
+		    	return true;
+		  	}
+		}
+
+  	</script>
+{% endblock %}

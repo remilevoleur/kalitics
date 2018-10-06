@@ -1,0 +1,60 @@
+{% extends 'defaultMenuBar.html.twig' %}
+
+{% block title %}
+Bibliothèque Ouverte - Accueil
+{% endblock %}
+
+   {% block body %}
+    <div class="row">
+        <br><br><br>
+
+        <div class="col-lg-offset-4 col-sm-4 col-lg-4 col-md-4" style="background-color: #e3f2fd;text-align:center;"><!--style= " position:fixed;z-index:1;top:0;left:0;overflow-x: hidden; padding-top: 20px;" -->
+
+            <div class="  form-group inline-form "  >
+               <input type="text" id="recherche" placeholder="Rechercher...">
+               <div class="critere">
+                 <input type="checkbox" class="form-check-input " > Ouverte(s) maintenant <br>
+
+                    <label>Trier par : </label>
+                       <select class="form-control form-control-sm choix form-control-plaintext" id="tri">
+                           <option value="nom"> Nom </option>
+                           <option value="distanceAsc"> Distance ascendante </option>
+                           <option value="distanceDesc"> Distance descendante </option>
+                       </select>
+                       <br><br>
+                       <button class="btn btn-primary bouton">Rechercher</button>
+               </div>
+
+            </div>
+       </div>
+        <div class="col" >
+
+        </div>
+    </div>
+        <div class="row" >
+        <div class="col-sm-12 col-lg-12 col-md-12" >
+           <div class="panel-group groupPanel" style="display:inline-block">
+
+
+          {% for bibliotheque in listeBibliotheques %}
+              <div class="panel panel-default " style="display:inline-block" >
+                  <div class="panel-body">
+                      <img class="photo" src="{{asset(''~bibliotheque.url)}}" width="400" height="150">
+                      <h1 class="nomBibliotheque"> {{ bibliotheque.nom }}  </h1>
+                      <hr class="separateur">
+                      <h5 class="infosBibliotheque"> {{ bibliotheque.universite }} • <span style="font-weight: bold"> {{ bibliotheque.etat }} </span> • {{ bibliotheque.distance }} </h5>
+                      <form action="{{ path('reservation') }}" method="post">
+                          <div class="progress" style="height: 20px;">
+                              <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                          </div>
+                          <button class="btn btn-primary" name="reservation" value="{{ bibliotheque.nom }}">Réserver</button>
+                      </form>
+                  </div>
+              </div>
+           {% endfor %}
+           </div>
+           </div>
+        </div>
+
+   {% endblock %}
+

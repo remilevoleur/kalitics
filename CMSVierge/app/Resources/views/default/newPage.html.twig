@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle page{% endblock %}
+
+{% block body %}  
+    {{ parent() }}         
+    <div class="content" style="margin-top: 60px; text-align: center;">
+            <div style="width: 50%; margin: 0 auto; display: inline-block;">
+                <div class="well">
+                    <h1 style="color: #078cb5;">Nouvelle page</h1><hr> 
+                    {% form_theme form1 'bootstrap_3_layout.html.twig' %}
+                    {{ form_start(form1) }}  
+                        {{ form_widget(form1) }}
+                    {{ form_end(form1) }}
+                </div>   
+            </div>                                                                                                                                                     
+    </div> 
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}   
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}   
+{% endblock %}

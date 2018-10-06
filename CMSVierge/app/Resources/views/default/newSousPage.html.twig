@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% import "macros/macros.html.twig" as macros %}
+
+{% block title %}Nouvelle sous-page{% endblock %}
+
+{% block body %}  
+    {{ parent() }}         
+    <div class="content" style="margin-top: 60px; text-align: center;">
+            <div style="display: inline-block;">
+                <div class="well">
+                    <h1 style="color: #078cb5;">Nouvelle sous-page</h1><hr> 
+                    {% form_theme form1 'bootstrap_3_layout.html.twig' %}
+                    {{ form_start(form1) }}  
+                        {{ form_row(form1.libelle) }}    
+                        {{ form_row(form1.position) }}    
+                        {{ form_row(form1.lien) }}    
+                        <ul id="bloc{{ form1.vars.id }}image"
+                        data-prototype="{{ macros.ChampImage(form1.images.vars.prototype)|e('html_attr') }}">
+                            <div id="bloc{{ form1.vars.id }}divimage" class="js-genus-scientist-wrapper">  
+                                {{ form_row(form1.images) }}
+                            </div>                        
+                        </ul>     
+                        {{ form_row(form1.Creer) }}                     
+                    {{ form_end(form1) }}
+
+                    <script type="text/javascript">
+
+                        selectHolders(
+                            "#bloc{{ form1.vars.id }}divimage",
+                            $('<a href="#" class="add_champsImage_link fa fa-plus-circle btn btn-info"> Champ image</a>'), 
+                            '#bloc{{ form1.vars.id }}image'
+                        );  
+
+                    </script>
+
+                </div>   
+            </div>     
+    </div> 
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}   
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}     
+{% endblock %}

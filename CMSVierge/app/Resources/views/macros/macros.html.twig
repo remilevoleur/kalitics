@@ -1,0 +1,1299 @@
+{% macro Bloc(bloc) %}
+
+    <div class="js-genus-scientist-item">  
+            <a href="#" class="js-remove-scientist btn btn-danger pull-right">
+                <span class="fa fa-close"></span>
+            </a>
+            <a href="#" style="display: none; position: absolute; top: 2px; left: 2px; z-index: 2;"
+            onclick="cacherMontrer('{{ bloc.vars.id }}', this); return false;" class="btn btn-success bouton_ok" id="bouton_ok_{{ bloc.vars.id }}">
+                Ok
+            </a>
+        <div class="well">    
+            <ul class="bloc{{ bloc.vars.id }}centreTexte" id="centreTexte" 
+            data-prototype="{{ _self.ChampTexte(bloc.champsTexte.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}centreTexte" class="js-genus-scientist-wrapper">                 
+                    {% set composants = bloc.champsTexte %}
+                    {% set composants = composants|merge(bloc.champsMap) %} 
+                    {% set composants = composants|merge(bloc.champsActualite) %} 
+                    {% set composants = composants|merge(bloc.champsImage) %} 
+                    {% set composants = composants|merge(bloc.champsSlide) %} 
+                    {% set composants = composants|merge(bloc.champsTitre) %}
+                    {% set composants = composants|merge(bloc.champsFormulaire) %}
+                    {% set composants = composants|merge(bloc.champsEncart) %}
+                    {% set composants = composants|merge(bloc.champsEmbarque) %} 
+                    {% set tmp = [] %}
+                    {% if composants is not empty %}
+                        {% for i in 0..composants|length - 1 %}
+                            {% set tmp = tmp|merge([composants[i].children]) %}
+                        {% endfor %}
+                    {% endif %}
+                    {% for composant in tmp | sortbyfield('position') %}
+                        {% if composant.sousTitre is defined %}
+                            {{ _self.ChampTexte(composant) }}
+                        {% elseif composant.adresse is defined %}
+                            {{ _self.ChampMap(composant) }}
+                        {% elseif composant.champsActualiteContent is defined %}
+                            {{ _self.ChampActualite(composant) }}
+                        {% elseif composant.image is defined %}
+                            {{ _self.ChampImage(composant) }}
+                        {% elseif composant.champsSlideContent is defined %}
+                            {{ _self.ChampDiaporama(composant) }}     
+                        {% elseif composant.titrePage is defined %}
+                            {{ _self.ChampTitre(composant) }}    
+                        {% elseif composant.position.parent.vars.block_prefixes[1] == "appbundle_champformulaire" %}
+                            {{ _self.ChampFormulaire(composant) }}    
+                        {% elseif composant.position.parent.vars.block_prefixes[1] == "appbundle_champencart" %}
+                            {{ _self.ChampEncart(composant) }} 
+                        {% elseif composant.position.parent.vars.block_prefixes[1] == "appbundle_champembarque" %}
+                            {{ _self.ChampEmbarque(composant) }}  
+                        {% endif %}   
+                    {% endfor %}  
+                    {% do bloc.setRendered() %}                     
+                </div>                        
+            </ul>
+
+            <ul class="bloc{{ bloc.vars.id }}centreMap" id="centreMap"
+            data-prototype="{{ _self.ChampMap(bloc.champsMap.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}centreMap" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>   
+
+            <ul class="bloc{{ bloc.vars.id }}centreActualite" id="centreActualite"
+            data-prototype="{{ _self.ChampActualite(bloc.champsActualite.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}centreActualite" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>  
+
+            <ul class="bloc{{ bloc.vars.id }}centreImage" id="centreImage"
+            data-prototype="{{ _self.ChampImage(bloc.champsImage.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}centreImage" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>
+
+            <ul class="bloc{{ bloc.vars.id }}centreDiaporama" id="centreDiaporama"
+            data-prototype="{{ _self.ChampDiaporama(bloc.champsSlide.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}centreDiaporama" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>
+
+            <ul class="bloc{{ bloc.vars.id }}centreTitre" id="centreTitre"
+            data-prototype="{{ _self.ChampTitre(bloc.champsTitre.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}centreTitre" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>
+
+            <ul class="bloc{{ bloc.vars.id }}centreForm"
+            data-prototype="{{ _self.ChampFormulaire(bloc.champsFormulaire.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}centreForm" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>
+
+            <ul class="bloc{{ bloc.vars.id }}centreEncart"
+            data-prototype="{{ _self.ChampEncart(bloc.champsEncart.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}centreEncart" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>
+
+            <ul class="bloc{{ bloc.vars.id }}centreEmbarque"
+            data-prototype="{{ _self.ChampEmbarque(bloc.champsEmbarque.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}centreEmbarque" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}centreTexte",
+            $('<a href="#" class="add_champsTexte_link fa fa-plus-circle btn btn-info"> Champ texte</a>'), 
+            'ul.bloc{{ bloc.vars.id }}centreTexte'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}centreMap",
+            $('<a href="#" class="add_champsMap_link fa fa-plus-circle btn btn-info"> Champ map</a>'), 
+            'ul.bloc{{ bloc.vars.id }}centreMap'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}centreActualite",
+            $('<a href="#" class="add_champsActualite_link fa fa-plus-circle btn btn-info"> Champ actualité</a>'), 
+            'ul.bloc{{ bloc.vars.id }}centreActualite'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}centreImage",
+            $('<a href="#" class="add_champsImage_link fa fa-plus-circle btn btn-info"> Champ image</a>'), 
+            'ul.bloc{{ bloc.vars.id }}centreImage'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}centreDiaporama",
+            $('<a href="#" class="add_champsSlide_link fa fa-plus-circle btn btn-info"> Champ slide</a>'), 
+            'ul.bloc{{ bloc.vars.id }}centreDiaporama'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}centreTitre",
+            $('<a href="#" class="add_champsTitre_link fa fa-plus-circle btn btn-info"> Champ titre</a>'), 
+            'ul.bloc{{ bloc.vars.id }}centreTitre'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}centreForm",
+            $('<a href="#" class="add_champsFormulaire_link fa fa-plus-circle btn btn-info"> Champ formulaire</a>'), 
+            'ul.bloc{{ bloc.vars.id }}centreForm'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}centreEncart",
+            $('<a href="#" class="add_champsEncart_link fa fa-plus-circle btn btn-info"> Champ Encart</a>'), 
+            'ul.bloc{{ bloc.vars.id }}centreEncart'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}centreEmbarque",
+            $('<a href="#" class="add_champsEmbarque_link fa fa-plus-circle btn btn-info"> Champ Embarque</a>'), 
+            'ul.bloc{{ bloc.vars.id }}centreEmbarque'
+        );
+
+    </script> 
+
+{% endmacro %}
+
+{% macro BlocDroite(bloc) %}
+
+    <div class="js-genus-scientist-item">
+        <a href="#" class="js-remove-scientist btn btn-danger pull-right">
+            <span class="fa fa-close"></span>
+        </a>
+        <a href="#" style="display: none; position: absolute; top: 2px; left: 2px; z-index: 2;" 
+        onclick="cacherMontrer('{{ bloc.vars.id }}', this); return false;" class="btn btn-success bouton_ok" id="bouton_ok_{{ bloc.vars.id }}">
+            Ok
+        </a>
+        <div class="well">    
+            <ul class="bloc{{ bloc.vars.id }}droiteTexte" 
+            data-prototype="{{ _self.ChampTexte(bloc.champsTexte.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}droiteTexte" class="js-genus-scientist-wrapper">                 
+                    {% set composants = bloc.champsTexte %}
+                    {% set composants = composants|merge(bloc.champsMap) %} 
+                    {% set composants = composants|merge(bloc.champsActualite) %} 
+                    {% set composants = composants|merge(bloc.champsImage) %} 
+                    {% set composants = composants|merge(bloc.champsSlide) %}
+                    {% set composants = composants|merge(bloc.champsTitre) %} 
+                    {% set composants = composants|merge(bloc.champsFormulaire) %}
+                    {% set composants = composants|merge(bloc.champsEncart) %}
+                    {% set composants = composants|merge(bloc.champsEmbarque) %}
+                    {% set tmp = [] %}
+                    {% if composants is not empty %}
+                        {% for i in 0..composants|length - 1 %}
+                            {% set tmp = tmp|merge([composants[i].children]) %}
+                        {% endfor %}
+                    {% endif %}                       
+                    {% for composant in tmp | sortbyfield('position') %}
+                        {% if composant.sousTitre is defined %}
+                            {{ _self.ChampTexte(composant) }}
+                        {% elseif composant.adresse is defined %}
+                            {{ _self.ChampMap(composant) }}
+                        {% elseif composant.champsActualiteContent is defined %}
+                            {{ _self.ChampActualite(composant) }}
+                        {% elseif composant.image is defined %}
+                            {{ _self.ChampImage(composant) }}
+                        {% elseif composant.champsSlideContent is defined %}
+                            {{ _self.ChampDiaporama(composant) }}
+                        {% elseif composant.titrePage is defined %}
+                            {{ _self.ChampTitre(composant) }}
+                        {% elseif composant.position.parent.vars.block_prefixes[1] == "appbundle_champformulaire" %}
+                            {{ _self.ChampFormulaire(composant) }} 
+                        {% elseif composant.position.parent.vars.block_prefixes[1] == "appbundle_champencart" %}
+                            {{ _self.ChampEncart(composant) }}    
+                        {% elseif composant.position.parent.vars.block_prefixes[1] == "appbundle_champembarque" %}
+                            {{ _self.ChampEmbarque(composant) }}  
+                        {% endif %}                        
+                    {% endfor %}   
+                    {% do bloc.setRendered() %}                    
+                </div>                        
+            </ul>
+
+            <ul class="bloc{{ bloc.vars.id }}droiteMap"
+            data-prototype="{{ _self.ChampMap(bloc.champsMap.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}droiteMap" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>  
+
+            <ul class="bloc{{ bloc.vars.id }}droiteActualite"
+            data-prototype="{{ _self.ChampActualite(bloc.champsActualite.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}droiteActualite" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>  
+
+            <ul class="bloc{{ bloc.vars.id }}droiteImage"
+            data-prototype="{{ _self.ChampImage(bloc.champsImage.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}droiteImage" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>  
+
+            <ul class="bloc{{ bloc.vars.id }}droiteDiaporama"
+            data-prototype="{{ _self.ChampDiaporama(bloc.champsSlide.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}droiteDiaporama" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>  
+
+            <ul class="bloc{{ bloc.vars.id }}droiteTitre"
+            data-prototype="{{ _self.ChampTitre(bloc.champsTitre.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}droiteTitre" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul> 
+
+            <ul class="bloc{{ bloc.vars.id }}droiteForm"
+            data-prototype="{{ _self.ChampFormulaire(bloc.champsFormulaire.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}droiteForm" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>
+
+            <ul class="bloc{{ bloc.vars.id }}droiteEncart"
+            data-prototype="{{ _self.ChampEncart(bloc.champsEncart.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}droiteEncart" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>
+
+            <ul class="bloc{{ bloc.vars.id }}droiteEmbarque"
+            data-prototype="{{ _self.ChampEmbarque(bloc.champsEmbarque.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}droiteEmbarque" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}droiteTexte",
+            $('<a href="#" class="add_champsTexte_link fa fa-plus-circle btn btn-info"> Champ texte</a>'), 
+            'ul.bloc{{ bloc.vars.id }}droiteTexte'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}droiteMap",
+            $('<a href="#" class="add_champsMap_link fa fa-plus-circle btn btn-info"> Champ map</a>'), 
+            'ul.bloc{{ bloc.vars.id }}droiteMap'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}droiteActualite",
+            $('<a href="#" class="add_champsActualite_link fa fa-plus-circle btn btn-info"> Champ actualité</a>'), 
+            'ul.bloc{{ bloc.vars.id }}droiteActualite'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}droiteImage",
+            $('<a href="#" class="add_champsImage_link fa fa-plus-circle btn btn-info"> Champ image</a>'), 
+            'ul.bloc{{ bloc.vars.id }}droiteImage'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}droiteDiaporama",
+            $('<a href="#" class="add_champsSlide_link fa fa-plus-circle btn btn-info"> Champ slide</a>'), 
+            'ul.bloc{{ bloc.vars.id }}droiteDiaporama'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}droiteTitre",
+            $('<a href="#" class="add_champsTitre_link fa fa-plus-circle btn btn-info"> Champ titre</a>'), 
+            'ul.bloc{{ bloc.vars.id }}droiteTitre'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}droiteForm",
+            $('<a href="#" class="add_champsFormulaire_link fa fa-plus-circle btn btn-info"> Champ formulaire</a>'), 
+            'ul.bloc{{ bloc.vars.id }}droiteForm'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}droiteEncart",
+            $('<a href="#" class="add_champsEncart_link fa fa-plus-circle btn btn-info"> Champ Encart</a>'), 
+            'ul.bloc{{ bloc.vars.id }}droiteEncart'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}droiteEmbarque",
+            $('<a href="#" class="add_champsEmbarque_link fa fa-plus-circle btn btn-info"> Champ Embarque</a>'), 
+            'ul.bloc{{ bloc.vars.id }}droiteEmbarque'
+        );
+
+    </script> 
+
+{% endmacro %}
+
+{% macro BlocGauche(bloc) %}
+
+    <div class="js-genus-scientist-item">
+        <a href="#" class="js-remove-scientist btn btn-danger pull-right">
+            <span class="fa fa-close"></span>
+        </a>
+        <a href="#" style="display: none; position: absolute; top: 2px; left: 2px; z-index: 2;"
+        onclick="cacherMontrer('{{ bloc.vars.id }}', this); return false;" class="btn btn-success bouton_ok" id="bouton_ok_{{ bloc.vars.id }}">
+            Ok
+        </a>
+        <div class="well">    
+            <ul class="bloc{{ bloc.vars.id }}gaucheTexte" 
+            data-prototype="{{ _self.ChampTexte(bloc.champsTexte.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}gaucheTexte" class="js-genus-scientist-wrapper ">                 
+                    {% set composants = bloc.champsTexte %}
+                    {% set composants = composants|merge(bloc.champsMap) %}
+                    {% set composants = composants|merge(bloc.champsActualite) %}
+                    {% set composants = composants|merge(bloc.champsImage) %} 
+                    {% set composants = composants|merge(bloc.champsSlide) %}  
+                    {% set composants = composants|merge(bloc.champsTitre) %}
+                    {% set composants = composants|merge(bloc.champsFormulaire) %}
+                    {% set composants = composants|merge(bloc.champsEncart) %}
+                    {% set composants = composants|merge(bloc.champsEmbarque) %}
+                    {% set tmp = [] %}
+                    {% if composants is not empty %}
+                        {% for i in 0..composants|length - 1 %}
+                            {% set tmp = tmp|merge([composants[i].children]) %}
+                        {% endfor %}
+                    {% endif %}                       
+                    {% for composant in tmp | sortbyfield('position') %}
+                        {% if composant.sousTitre is defined %}
+                            {{ _self.ChampTexte(composant) }}
+                        {% elseif composant.adresse is defined %}
+                            {{ _self.ChampMap(composant) }}
+                        {% elseif composant.champsActualiteContent is defined %}
+                            {{ _self.ChampActualite(composant) }}
+                        {% elseif composant.image is defined %}
+                            {{ _self.ChampImage(composant.image.parent) }}
+                        {% elseif composant.champsSlideContent is defined %}
+                            {{ _self.ChampDiaporama(composant) }}
+                        {% elseif composant.titrePage is defined %}
+                            {{ _self.ChampTitre(composant) }}
+                        {% elseif composant.position.parent.vars.block_prefixes[1] == "appbundle_champformulaire" %}
+                            {{ _self.ChampFormulaire(composant) }}  
+                        {% elseif composant.position.parent.vars.block_prefixes[1] == "appbundle_champencart" %}
+                            {{ _self.ChampEncart(composant) }}    
+                        {% elseif composant.position.parent.vars.block_prefixes[1] == "appbundle_champembarque" %}
+                            {{ _self.ChampEmbarque(composant) }} 
+                        {% endif %}                        
+                    {% endfor %}  
+                    {% do bloc.setRendered() %}                                         
+                </div>                        
+            </ul>
+
+            <ul class="bloc{{ bloc.vars.id }}gaucheMap"
+            data-prototype="{{ _self.ChampMap(bloc.champsMap.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}gaucheMap" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>
+
+            <ul class="bloc{{ bloc.vars.id }}gaucheActualite"
+            data-prototype="{{ _self.ChampActualite(bloc.champsActualite.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}gaucheActualite" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul> 
+
+            <ul class="bloc{{ bloc.vars.id }}gaucheImage"
+            data-prototype="{{ _self.ChampImage(bloc.champsImage.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}gaucheImage" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>   
+
+            <ul class="bloc{{ bloc.vars.id }}gaucheDiaporama"
+            data-prototype="{{ _self.ChampDiaporama(bloc.champsSlide.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}gaucheDiaporama" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>  
+
+            <ul class="bloc{{ bloc.vars.id }}gaucheTitre"
+            data-prototype="{{ _self.ChampTitre(bloc.champsTitre.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}gaucheTitre" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>
+
+            <ul class="bloc{{ bloc.vars.id }}gaucheForm"
+            data-prototype="{{ _self.ChampFormulaire(bloc.champsFormulaire.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}gaucheForm" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>
+
+            <ul class="bloc{{ bloc.vars.id }}gaucheEncart"
+            data-prototype="{{ _self.ChampEncart(bloc.champsEncart.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}gaucheEncart" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>
+
+            <ul class="bloc{{ bloc.vars.id }}gaucheEmbarque"
+            data-prototype="{{ _self.ChampEmbarque(bloc.champsEmbarque.vars.prototype)|e('html_attr') }}">
+                <div id="bloc{{ bloc.vars.id }}gaucheEmbarque" class="js-genus-scientist-wrapper">  
+                </div>                        
+            </ul>
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}gaucheTexte",
+            $('<a href="#" class="add_champsTexte_link fa fa-plus-circle btn btn-info"> Champ texte</a>'), 
+            'ul.bloc{{ bloc.vars.id }}gaucheTexte'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}gaucheMap",
+            $('<a href="#" class="add_champsMap_link fa fa-plus-circle btn btn-info"> Champ map</a>'), 
+            'ul.bloc{{ bloc.vars.id }}gaucheMap'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}gaucheActualite",
+            $('<a href="#" class="add_champsActualite_link fa fa-plus-circle btn btn-info"> Champ actualité</a>'), 
+            'ul.bloc{{ bloc.vars.id }}gaucheActualite'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}gaucheImage",
+            $('<a href="#" class="add_champsImage_link fa fa-plus-circle btn btn-info"> Champ image</a>'), 
+            'ul.bloc{{ bloc.vars.id }}gaucheImage'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}gaucheDiaporama",
+            $('<a href="#" class="add_champsSlide_link fa fa-plus-circle btn btn-info"> Champ slide</a>'), 
+            'ul.bloc{{ bloc.vars.id }}gaucheDiaporama'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}gaucheTitre",
+            $('<a href="#" class="add_champsTitre_link fa fa-plus-circle btn btn-info"> Champ titre</a>'), 
+            'ul.bloc{{ bloc.vars.id }}gaucheTitre'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}gaucheForm",
+            $('<a href="#" class="add_champsFormulaire_link fa fa-plus-circle btn btn-info"> Champ formulaire</a>'), 
+            'ul.bloc{{ bloc.vars.id }}gaucheForm'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}gaucheEncart",
+            $('<a href="#" class="add_champsEncart_link fa fa-plus-circle btn btn-info"> Champ Encart</a>'), 
+            'ul.bloc{{ bloc.vars.id }}gaucheEncart'
+        );
+
+        selectHolders(
+            "#bloc{{ bloc.vars.id }}gaucheEmbarque",
+            $('<a href="#" class="add_champsEmbarque_link fa fa-plus-circle btn btn-info"> Champ Embarque</a>'), 
+            'ul.bloc{{ bloc.vars.id }}gaucheEmbarque'
+        );
+
+
+    </script> 
+
+{% endmacro %}
+
+{% macro BlocVue(bloc, pageActualite) %}                    
+        
+            {% set composants = bloc.champsTexte %}
+            {% set composants = composants|merge(bloc.champsMap) %} 
+            {% set composants = composants|merge(bloc.champsActualite) %} 
+            {% set composants = composants|merge(bloc.champsImage) %}  
+            {% set composants = composants|merge(bloc.champsSlide) %}
+            {% set composants = composants|merge(bloc.champsTitre) %} 
+            {% set composants = composants|merge(bloc.champsFormulaire) %}
+            {% set composants = composants|merge(bloc.champsEncart) %}
+            {% set composants = composants|merge(bloc.champsEmbarque) %}
+            {% set tmp = [] %}
+            {% if composants is not empty %}
+                {% for i in 0..composants|length - 1 %}
+                    {% set tmp = tmp|merge([composants[i].children]) %}
+                {% endfor %}
+            {% endif %} 
+            {% for composant in tmp | sortbyfield('position') %}
+                {% if composant.sousTitre is defined %}
+                    <div class="well" id="texte">   
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="#" style="display: block; position: absolute; top: 1px; right: 1px; z-index: 2;"
+                            onclick="montrerCacher('{{ bloc.vars.id }}', this); return false;" class="btn btn-success" id="bouton_modifier_{{ bloc.vars.id }}">
+                                Modifier
+                            </a>
+                        {% endif %}
+                        {{ _self.VueChampTexte(composant) }}
+                    </div>
+                {% elseif composant.adresse is defined %}
+                    <div class="well" id="adresse">
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="#" style="display: block; position: absolute; top: 1px; right: 1px; z-index: 2;"
+                            onclick="montrerCacher('{{ bloc.vars.id }}', this); return false;" class="btn btn-success" id="bouton_modifier_{{ bloc.vars.id }}">
+                                Modifier
+                            </a>
+                        {% endif %} 
+                        {{ _self.VueChampMap(composant) }}
+                    </div>
+                {% elseif composant.champsActualiteContent is defined %}
+                    <div class="actualite" id="actualite"> 
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="#" style="display: block; position: absolute; top: 1px; right: 1px; z-index: 2;"
+                            onclick="montrerCacher('{{ bloc.vars.id }}', this); return false;" class="btn btn-success" id="bouton_modifier_{{ bloc.vars.id }}">
+                                Modifier
+                            </a>
+                        {% endif %}               
+                        {{ _self.VueChampActualite(composant, pageActualite) }}
+                    </div>      
+                {% elseif composant.image is defined %}
+                    <div class="well" id="image">   
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="#" style="display: block; position: absolute; top: 1px; right: 1px; z-index: 2;"
+                            onclick="montrerCacher('{{ bloc.vars.id }}', this); return false;" class="btn btn-success" id="bouton_modifier_{{ bloc.vars.id }}">
+                                Modifier
+                            </a>
+                        {% endif %}              
+                        {{ _self.VueChampImage(composant) }}
+                    </div> 
+                {% elseif composant.champsSlideContent is defined %}
+                    <div class="well" id="diaporama">
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="#" style="display: block; position: absolute; top: 1px; right: 1px; z-index: 2;"
+                            onclick="montrerCacher('{{ bloc.vars.id }}', this); return false;" class="btn btn-success" id="bouton_modifier_{{ bloc.vars.id }}">
+                                Modifier
+                            </a>
+                        {% endif %} 
+                        {{ _self.VueChampDiaporama(composant) }}
+                    </div>  
+                {% elseif composant.titrePage is defined %}
+                    <div class="well titre_page" id="titre_page">
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="#" style="display: block; position: absolute; top: 1px; right: 1px; z-index: 2;"
+                            onclick="montrerCacher('{{ bloc.vars.id }}', this); return false;" class="btn btn-success" id="bouton_modifier_{{ bloc.vars.id }}">
+                                Modifier
+                            </a>
+                        {% endif %} 
+                        {{ _self.VueChampTitre(composant) }}
+                    </div>                     
+                {% elseif composant.position.parent.vars.block_prefixes[1] == "appbundle_champformulaire" %}
+                    <div class="well formulaire" id="formulaire">
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="#" style="display: block; position: absolute; top: 1px; right: 1px; z-index: 2;"
+                            onclick="montrerCacher('{{ bloc.vars.id }}', this); return false;" class="btn btn-success" id="bouton_modifier_{{ bloc.vars.id }}">
+                                Modifier
+                            </a>
+                        {% endif %} 
+                        {{ _self.VueChampFormulaire(composant) }}
+                    </div> 
+                {% elseif composant.position.parent.vars.block_prefixes[1] == "appbundle_champencart" %} 
+                    <div style="position: relative;">
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="#" style="display: block; position: absolute; top: 1px; right: 1px; z-index: 2;"
+                            onclick="montrerCacher('{{ bloc.vars.id }}', this); return false;" class="btn btn-success" id="bouton_modifier_{{ bloc.vars.id }}">
+                                Modifier
+                            </a>
+                        {% endif %}
+                        {{ _self.VueChampEncart(composant) }}
+                    </div>
+                {% elseif composant.position.parent.vars.block_prefixes[1] == "appbundle_champembarque" %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="#" style="display: block; position: absolute; top: 1px; right: 1px; z-index: 2;"
+                            onclick="montrerCacher('{{ bloc.vars.id }}', this); return false;" class="btn btn-success" id="bouton_modifier_{{ bloc.vars.id }}">
+                                Modifier
+                            </a>
+                        {% endif %}
+                        {{ _self.VueChampEmbarque(composant) }}
+                {% endif %}   
+            {% endfor %}      
+        
+        {% if is_granted('ROLE_ADMIN') == false %}
+            {% do bloc.setRendered() %} 
+        {% endif %}        
+
+{% endmacro %}
+
+{% macro ChampTexte(champTexte) %}    
+
+    <div class="js-genus-scientist-item">
+        <a href="#" class="js-remove-scientist btn btn-danger pull-right">
+            <span class="fa fa-close"></span>
+        </a>
+        {{ form_row(champTexte.titre) }}
+        {{ form_row(champTexte.sousTitre) }}
+        {{ form_row(champTexte.texte) }}
+        {{ form_row(champTexte.fin) }}
+        {{ form_row(champTexte.position) }}
+        {{ form_row(champTexte.date) }}
+    </div>    
+	<script type="text/javascript">
+        ClassicEditor
+        .create( document.querySelector( '#{{ champTexte.texte.vars.id }}' ),
+        {
+            removePlugins: [ 'Heading', 'Link' ],
+            toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
+        } )
+        .catch( error => {
+            console.error( error );
+        } )
+        .editorConfig = function( config ) { 
+            config.resize_enabled = false; 
+            config.entities_latin = false; 
+            config.entities_greek = false; 
+            config.entities = false; 
+            config.basicEntities = false; 
+        };
+    </script>
+                 
+{% endmacro %}
+
+{% macro VueChampTexte(champTexte) %}
+
+    {% if date(champTexte.datecachee.vars.value) <= date() %}               
+    
+        <h1 class="ChampTexteTitre">{{ champTexte.titre.vars.value|raw|nl2br }}</h1>
+        <h2 class="ChampTexteSousTitre">{{ champTexte.sousTitre.vars.value|raw|nl2br }}</h2>
+        <div class="ChampTexteTexte">{{ champTexte.texte.vars.value|raw|nl2br }}</div>
+        <p class="ChampTexteFin">{{ champTexte.fin.vars.value|raw|nl2br }}</p>
+
+        {% if is_granted('ROLE_ADMIN') == false %}  
+            {% do champTexte.titre.parent.setRendered() %}   
+        {% endif %} 
+
+        <style type="text/css">
+
+            .ChampTexteTitre
+            {
+                font-weight: bold;
+                color: rgb(0,80,155);
+            }
+
+            .ChampTexteSousTitre
+            {
+                color: rgb(115,185,100);
+            }
+
+            .ChampTexteFin
+            {
+                font-style: italic;
+                color: rgb(115,185,100);
+            }
+
+        </style>
+
+    {% endif %}
+
+{% endmacro %}
+
+{% macro ChampMap(champMap) %}               
+
+    <div class="js-genus-scientist-item">
+        <a href="#" class="js-remove-scientist btn btn-danger pull-right">
+            <span class="fa fa-close"></span>
+        </a>
+        {{ form_row(champMap.adresse) }}
+        {{ form_row(champMap.position) }}
+        {{ form_row(champMap.date) }}
+    </div>
+                 
+
+{% endmacro %}
+
+{% macro VueChampMap(champMap) %}
+
+    {% if date(champMap.datecachee.vars.value) <= date() %}
+    
+        <div id="map" style="height: 400px;"></div><br>  
+        
+        {% if is_granted('ROLE_ADMIN') == false %}
+            {% do champMap.adresse.parent.setRendered() %}
+        {% endif %}
+
+        <script type="text/javascript">
+
+        $("#map").closest('.well').attr("style", "opacity: 1;")
+            
+        function initMap() {
+            geocoder = new google.maps.Geocoder();
+            geocoder.geocode({
+                'address': "{{ champMap.adresse.vars.value }}"
+            }, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var myOptions = {
+                        zoom: 15,
+                        center: results[0].geometry.location,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    }
+                    map = new google.maps.Map(document.getElementById("map"), myOptions);
+
+                    var markers = [];
+
+                    markers.push(new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location
+                    }));                  
+                  };
+                })
+        }
+
+        </script>
+
+        <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOk561kl8XUgBt59IgxkYRS1ETBRLBlj0&callback=initMap&libraries=places">
+        </script>
+
+    {% endif %}
+
+{% endmacro %}
+
+{% macro ChampActualite(champActualite) %}               
+
+    <div class="js-genus-scientist-item">
+        <a href="#" class="js-remove-scientist btn btn-danger pull-right">
+            <span class="fa fa-close"></span>
+        </a>
+        {{ form_row(champActualite.position) }}     
+        {{ form_row(champActualite.limite) }}              
+        <hr>
+        <ul class="bloc{{ champActualite.position.parent.vars.id }}ActualiteContent"
+        data-prototype="{{ _self.ChampActualiteContent(champActualite.champsActualiteContent.vars.prototype)|e('html_attr') }}"
+        style="width: 90%; display: inline-block;">
+            <div id="bloc{{ champActualite.position.parent.vars.id }}ActualiteContent" class="js-genus-scientist-wrapper">  
+                {% for composant in champActualite.champsActualiteContent %}
+                    {{ _self.ChampActualiteContent(composant) }}
+                {% endfor %}
+            </div>                        
+        </ul>                      
+    </div>
+         
+
+    <script type="text/javascript">
+
+        selectHolders(
+            "#bloc{{ champActualite.position.parent.vars.id }}ActualiteContent",
+            $('<a href="#" class="add_champsActualiteContent_link fa fa-plus-circle btn btn-info"> Actualité</a>'), 
+            'ul.bloc{{ champActualite.position.parent.vars.id }}ActualiteContent'
+        );
+
+    </script>
+
+{% endmacro %}
+
+{% macro VueChampActualite(champActualite, pageActualite) %}
+
+    {% if is_granted('ROLE_ADMIN') == false %}
+        {% do champActualite.position.parent.setRendered() %}
+    {% endif %}
+
+    <div class="container" style="width: 100%;">
+        <div class="page-header">
+            <h1 id="timeline"><i class="fa fa-calendar" style="color: rgba(115,185,100,0.7);"></i> Actualités</h1>
+        </div>
+        {% if champActualite.champsActualiteContent.parent.parent.parent.vars.value.position != "centre" %}
+            <div class="ticker1">
+                <div class="innerWrap">
+                    {% for composant in champActualite.champsActualiteContent %}                    
+                        {{ _self.MiniVueChampActualiteContent(composant, pageActualite) }}
+                    {% endfor %}  
+                </div>
+            </div>  
+        {% else %}            
+            {% for composant in champActualite.champsActualiteContent %}
+                <div class="actu">
+                    {{ _self.VueChampActualiteContent(composant, pageActualite) }}
+                </div>
+            {% endfor %}
+                <div style="width: 100%;"></div>               
+        {% endif %}      
+    </div>  
+
+    <script type="text/javascript">    
+        /*
+        var i = 0;
+
+        $('.{{ champActualite.position.parent.vars.id }}').each(function(index) {        
+            i++;
+            $(this).delay(6000*index).animate({opacity: '1'}, {duration: 1000, queue: true});
+            $(this).delay(5000).animate({opacity: '0'}, {duration: 1000, queue: true});
+        });
+
+        window.setInterval(
+            function(){        
+                $('.{{ champActualite.position.parent.vars.id }}').each(function(index) {        
+                    console.log(index);    
+                    $(this).delay(5500*index).animate({opacity: '1'}, {duration: 500, queue: true});
+                    $(this).delay(5500).animate({opacity: '0'}, {duration: 500, queue: true});
+                });
+            },i*6000
+        );
+        */
+
+        $('.ticker1').easyTicker({
+            direction: 'up',
+            easing: 'swing',
+            speed: 4500,
+            interval: 5000,
+            height: '720px',
+            visible: 3,
+            mousePause: 1,
+            controls: {
+                up: '',
+                down: '',
+                toggle: '',
+                playText: 'Play',
+                stopText: 'Stop'
+            }
+        });
+
+    </script>
+
+{% endmacro %}
+
+{% macro ChampActualiteContent(champActualiteContent) %}    
+
+    <div class="js-genus-scientist-item">
+        <a href="#" class="js-remove-scientist btn btn-danger pull-right">
+            <span class="fa fa-close"></span>
+        </a>                
+        {{ _self.ChampImage(champActualiteContent.image) }}
+        <script type="text/javascript">
+            var position = document.getElementById("{{ champActualiteContent.image.position.vars.id }}");
+            var lien = document.getElementById("{{ champActualiteContent.image.lien.vars.id }}");
+            var date = document.getElementById("{{ champActualiteContent.image.date.vars.id }}");
+            date.parentElement.setAttribute("style", "display: none;");
+            position.removeAttribute("required");
+            lien.parentElement.setAttribute("style", "display: none;");
+            position.parentElement.setAttribute("style", "display: none;");
+        </script>
+        {{ form_widget(champActualiteContent) }}  
+    </div>
+
+    <script type="text/javascript">
+        var count = document.getElementsByClassName("form-group").length;
+        document.getElementById("{{ champActualiteContent.vars.id }}").setAttribute("id", "{{ champActualiteContent.vars.id }}" + count);    
+    </script>       
+
+{% endmacro %}
+
+{% macro VueChampActualiteContent(champActualiteContent) %}  
+    
+    {% if date(champActualiteContent.datecachee.vars.value) <= date() %}           
+
+        <div class="date_container">
+            <p class="timeline-date"><i class="fa fa-calendar" style="color: rgba(115,185,100,0.7);"></i></i> Le                 
+            {{ champActualiteContent.date.vars.value.date.day }}/
+            {{ champActualiteContent.date.vars.value.date.month }}/
+            {{ champActualiteContent.date.vars.value.date.year }}
+            </p>
+        </div>
+
+        {% if champActualiteContent.ancre.vars.value != "" %}
+            <h2 style="min-height: 100px;margin-top: 11%;"><b><a class="titre_actu" href="{{ path('homepage', {'id': champActualiteContent.ancre.vars.value}) }}">
+                {{ champActualiteContent.titre.vars.value }}
+            </a></b></h2>
+            <a target="_blank" href="{{ path('homepage', {'id': champActualiteContent.ancre.vars.value}) }}">
+                <img class="img_actu" src="{{ asset('uploads/' ~ champActualiteContent.image.image.vars.value) }}" style="width: 100%;">
+            </a>        
+            <p style="margin-top: 5%;">{{ champActualiteContent.texte.vars.value|slice(0, 280)|nl2br }}</p>
+            <a href="{{ path('homepage', {'id': champActualiteContent.ancre.vars.value}) }}">
+                En savoir plus ...
+                <i class="glyphicon glyphicon-share-alt"></i>
+            </a> 
+        {% else %}
+            <h2 style="min-height: 100px;margin-top: 11%;"><b>
+                {{ champActualiteContent.titre.vars.value }}
+            </b></h2>    
+            <img src="{{ asset('uploads/' ~ champActualiteContent.image.image.vars.value) }}" style="width: 100%;">
+            <p style="margin-top: 5%;">{{ champActualiteContent.texte.vars.value|slice(0, 280)|nl2br }}</p>
+        {% endif %}  
+        
+
+    {% endif %}
+
+{% endmacro %}
+
+{% macro MiniVueChampActualiteContent(champActualiteContent, pageActualite) %}
+
+    {% if date(champActualiteContent.datecachee.vars.value) <= date() %}  
+
+        <div class="list well">
+            <div>
+                {% if champActualiteContent.ancre.vars.value != "" %}
+                    <a target="_blank" href="{{ path('homepage', {'id': champActualiteContent.ancre.vars.value}) }}">
+                        <img class="img_actu mini_img_actu" src="{{ asset('uploads/' ~ champActualiteContent.image.image.vars.value) }}" style="float: left; width: 30%;">
+                    </a>
+                    <h4><b><a class="titre_actu" href="{{ path('homepage', {'id': champActualiteContent.ancre.vars.value}) }}">
+                        {{ champActualiteContent.titre.vars.value }}
+                    </a></b></h4>
+                {% else %}
+                    <img class="mini_img_actu" src="{{ asset('uploads/' ~ champActualiteContent.image.image.vars.value) }}" style="float: left; width: 30%;">
+                    <h4 style="margin-top: 6%;"><b>{{ champActualiteContent.titre.vars.value }}</b></h4>                    
+                {% endif %}
+                <p class="mini_date_actu"><small class="text-muted text-date"><i class="glyphicon glyphicon-time"></i> Le
+                {{ champActualiteContent.date.vars.value.date.day }}/
+                {{ champActualiteContent.date.vars.value.date.month }}/
+                {{ champActualiteContent.date.vars.value.date.year }}
+                </small></p>
+            </div>
+            <div>
+                <p>{{ champActualiteContent.texte.vars.value|slice(0, 140) }} ...
+                    {% if pageActualite is not null %}
+                        <a href="{{ path('homepage', {'id': champActualiteContent.ancre.vars.value}) }}">
+                            Lire la suite
+                            <i class="glyphicon glyphicon-share-alt"></i>
+                        </a>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endmacro %}
+
+{% macro ChampImage(champImage) %}
+
+        <div class="js-genus-scientist-item">
+            <a href="#" class="js-remove-scientist btn btn-danger pull-right">
+                <span class="fa fa-close"></span>
+            </a>
+            {{ form_row(champImage.position) }}
+            {{ form_row(champImage.lien) }}
+            {{ form_row(champImage.image) }}
+            {{ form_row(champImage.date) }}
+            <div class="dropzone" id="{{ champImage.position.parent.vars.id }}"></div>
+        </div>
+
+
+        <script type="text/javascript">
+
+        nouveauDropZone("{{ champImage.image.parent.vars.id }}", "{{ champImage.image.vars.id }}", "{{ path('imageuploadhandler', { 'dir': 'dir_id' }) }}");
+
+        </script> 
+
+{% endmacro %}
+
+{% macro VueChampImage(champImage) %} 
+
+    {% if date(champImage.datecachee.vars.value) <= date() %}
+        {% if champImage.lien.vars.value == "" %}
+            <img src="{{ asset('uploads/' ~ champImage.image.vars.value) }}" style="width: 100%;">
+        {% else %}
+            <a target="_blank" href="{{ champImage.lien.vars.value }}">
+                <img src="{{ asset('uploads/' ~ champImage.image.vars.value) }}" style="width: 100%;">
+            </a>
+        {% endif %}
+    {% endif %}
+
+{% endmacro %}
+
+{% macro ChampDiaporama(champDiaporama) %}               
+
+    <div class="js-genus-scientist-item">
+        <a href="#" class="js-remove-scientist btn btn-danger pull-right">
+            <span class="fa fa-close"></span>
+        </a>
+        {{ form_row(champDiaporama.position) }}                      
+        <ul class="bloc{{ champDiaporama.position.vars.id }}Slide"
+        data-prototype="{{ _self.Slide(champDiaporama.champsSlideContent.vars.prototype)|e('html_attr') }}">
+            <div id="bloc{{ champDiaporama.position.vars.id }}Slide" class="js-genus-scientist-wrapper">
+                {% for composant in champDiaporama.champsSlideContent %}
+                    {{ _self.Slide(composant) }}
+                {% endfor %}
+            </div>                        
+        </ul>                      
+    </div>
+         
+
+    <script type="text/javascript">        
+        
+        selectHolders(
+            "#bloc{{ champDiaporama.position.vars.id }}Slide",
+            $('<a href="#" class="add_diaporamas_link fa fa-plus-circle btn btn-info"> Diapo</a>'), 
+            'ul.bloc{{ champDiaporama.position.vars.id }}Slide'
+        );
+
+    </script>        
+
+{% endmacro %}
+
+{% macro Slide(slide) %}               
+
+    <div class="js-genus-scientist-item">
+        <a href="#" class="js-remove-scientist btn btn-danger pull-right">
+            <span class="fa fa-close"></span>
+        </a>
+        {{ form_row(slide.texte) }}    
+        <div style="display: -moz-stack;">{{ form_row(slide.texteCouleur) }}</div>
+        {{ form_row(slide.url) }}          
+        {{ form_row(slide.date) }}
+        <div class="dropzone" id="{{ slide.vars.id }}"></div>
+    </div>
+      
+
+    <script type="text/javascript">    
+
+    nouveauDropZone("{{ slide.vars.id }}", "{{ slide.url.vars.id }}", "{{ path('imageuploadhandler', { 'dir': 'dir_id' }) }}");
+
+    </script>           
+
+{% endmacro %}
+
+{% macro VueChampDiaporama(champDiaporama) %}               
+
+    <div class="slideshow-container">
+        {% set j  = champDiaporama.champsSlideContent.children | length %}
+        {% set k = 1 %}
+        {% for composant in champDiaporama.champsSlideContent %}
+            <div class="mySlides fade">
+                <div class="numbertext">
+                    {{ k }} / {{ j }}
+                </div>
+                {{ _self.VueDiaporama(composant) }}
+            </div>
+            {% set k = k + 1 %}
+        {% endfor %}
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+
+    <br>
+
+    <!-- The dots/circles -->
+    <div style="text-align:center">
+        {% set k = 1 %}
+        {% for composant in champDiaporama.champsSlideContent %}
+                <span class="dot" onclick="currentSlide({{ k }})"></span>
+            {% set k = k + 1 %}
+        {% endfor %}        
+    </div>
+
+    <script type="text/javascript">
+
+        var slideIndex = 1;
+        showSlides(slideIndex);
+
+        // Next/previous controls
+        function plusSlides(n) {
+          showSlides(slideIndex += n);
+        }
+
+        // Thumbnail image controls
+        function currentSlide(n) {
+          showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+          var i;
+          var slides = document.getElementsByClassName("mySlides");
+          var dots = document.getElementsByClassName("dot");
+          if (n > slides.length) {slideIndex = 1}
+          if (n < 1) {slideIndex = slides.length}
+          for (i = 0; i < slides.length; i++) {
+              slides[i].style.display = "none";
+          }
+          for (i = 0; i < dots.length; i++) {
+              dots[i].className = dots[i].className.replace(" active", "");
+          }
+          slides[slideIndex-1].style.display = "block";
+          dots[slideIndex-1].className += " active";
+        } 
+
+    </script>        
+
+{% endmacro %}
+
+{% macro VueDiaporama(slide) %}            
+
+    {% if date(slide.datecachee.vars.value) <= date() %}
+
+        <img src="{{ asset('uploads/' ~ slide.url.vars.value) }}" style="width:100%;">
+        <div class="text" style="color: {{ slide.texteCouleur.vars.value }};">{{ slide.texte.vars.value|raw|nl2br }}</div>
+
+    {% endif %}
+
+{% endmacro %}
+
+{% macro ChampTitre(champTitre) %}    
+
+    <div class="js-genus-scientist-item">
+        <a href="#" class="js-remove-scientist btn btn-danger pull-right">
+            <span class="fa fa-close"></span>
+        </a>
+        {{ form_widget(champTitre.position.parent) }}
+    </div>    
+                 
+{% endmacro %}
+
+{% macro VueChampTitre(champTitre) %}
+
+        <h1 class="ChampTitre">{{ champTitre.titrePage.vars.value }}</h1>
+
+        {% if is_granted('ROLE_ADMIN') == false %}
+            {% do champTitre.titrePage.parent.setRendered() %} 
+        {% endif %}  
+
+{% endmacro %}
+
+{% macro ChampFormulaire(champFormulaire) %}    
+
+    <div class="js-genus-scientist-item">
+        <a href="#" class="js-remove-scientist btn btn-danger pull-right">
+            <span class="fa fa-close"></span>
+        </a>
+        {{ form_widget(champFormulaire.position.parent) }}
+    </div>   
+                 
+{% endmacro %}
+
+{% macro VueChampFormulaire(champFormulaire) %}    
+
+    <div id="{{ champFormulaire.position.parent.vars.id }}div">
+        <h1 style="color: rgb(0,80,155);">Nous contacter</h1>
+        <div class="form-group">
+            <input name="nom" type="text" required="required" class="form-control" id="{{ champFormulaire.position.parent.vars.id }}nom" placeholder="Saisissez votre nom">
+        </div>
+        <div class="form-group">
+            <input name="prenom" type="text" required="required" class="form-control" id="{{ champFormulaire.position.parent.vars.id }}prenom" placeholder="Saisissez votre prénom">
+        </div>
+        <div class="form-group">
+            <input name="mail" type="email" required="required" class="form-control" id="{{ champFormulaire.position.parent.vars.id }}mail" placeholder="Saisissez votre mail">
+        </div>
+        <div class="form-group">
+            <input name="tel" type="tel" class="form-control" id="{{ champFormulaire.position.parent.vars.id }}tel" placeholder="Numéro de téléphone (optionnel)">
+        </div>
+        <div class="btn-group btn-group-toggle" style="margin-bottom: 10px;">
+            <label class="btn btn-info active">
+                <input style="display: none;" type="radio" name="options" id="option1" autocomplete="off" checked onclick="questionSwitch(this)"> Question
+            </label>
+            <label class="btn btn-info">
+                <input style="display: none;" type="radio" name="options" id="option2" autocomplete="off" onclick="devisSwitch(this)"> Devis
+            </label>
+        </div>
+        <div class="form-group question">
+            <textarea name="question" class="form-control" rows="5" id="{{ champFormulaire.position.parent.vars.id }}question" placeholder="Posez-nous votre question"></textarea>
+        </div> 
+        <div class="form-group devis" style="display: none;">
+            <textarea name="devis" class="form-control" rows="5" id="{{ champFormulaire.position.parent.vars.id }}besoins" placeholder="Décrivez-nous vos besoins"></textarea>
+        </div> 
+        
+        <a style="display: block;display: none;width: -moz-fit-content;margin: auto;margin-bottom: auto;margin-bottom: 5px;" class="fa fa-plus-circle btn btn-info devis" onclick='nouveauCreneau(this, "{{ champFormulaire.position.parent.vars.id }}creneau")'> Créneau horaire</a>
+
+        <button id="{{ champFormulaire.position.parent.vars.id }}" class="btn btn-primary">Envoyer</button>
+    </div>
+    
+    <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.44/css/bootstrap-datetimepicker.css" rel="stylesheet"/>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.44/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script type="text/javascript">        
+        
+        $("#{{ champFormulaire.position.parent.vars.id }}").click(function(e) {
+
+            var nom = document.getElementById("{{ champFormulaire.position.parent.vars.id }}nom").value;
+            var prenom = document.getElementById("{{ champFormulaire.position.parent.vars.id }}prenom").value;
+            var mail = document.getElementById("{{ champFormulaire.position.parent.vars.id }}mail").value;
+            var tel = document.getElementById("{{ champFormulaire.position.parent.vars.id }}tel").value;
+            var questionInput = document.getElementById("{{ champFormulaire.position.parent.vars.id }}question").value;
+            var devisInput = document.getElementById("{{ champFormulaire.position.parent.vars.id }}besoins").value;
+
+            envoyerForm(e, nom, prenom, mail, tel, questionInput, devisInput, ".{{ champFormulaire.position.parent.vars.id }}creneau");
+
+        });        
+
+    </script>
+
+{% endmacro %}
+
+{% macro ChampEncart(champEncart) %}    
+
+    <div class="js-genus-scientist-item">
+        <a href="#" class="js-remove-scientist btn btn-danger pull-right">
+            <span class="fa fa-close"></span>
+        </a>
+        
+        <div style="display: flex;">
+            <div style="width: 50%; float: left; z-index: 1;">
+                {{ _self.ChampTexte(champEncart.champTexte) }}
+                <script type="text/javascript">
+                    var position = document.getElementById("{{ champEncart.champTexte.position.vars.id }}");
+                    var date = document.getElementById("{{ champEncart.champTexte.date.vars.id }}");
+                    date.parentElement.setAttribute("style", "display: none;");
+                    position.removeAttribute("required");
+                    position.parentElement.setAttribute("style", "display: none;");
+                </script>
+            </div>
+            <div style="width: 50%; float: right; z-index: 1;">
+                {{ _self.ChampImage(champEncart.champImage) }}
+                <script type="text/javascript">
+                    var position = document.getElementById("{{ champEncart.champImage.position.vars.id }}");
+                    var date = document.getElementById("{{ champEncart.champImage.date.vars.id }}");
+                    date.parentElement.setAttribute("style", "display: none;");
+                    position.removeAttribute("required");
+                    position.parentElement.setAttribute("style", "display: none;");
+                </script>
+            </div>
+        </div>
+        {{ form_row(champEncart.positionImage) }}
+        {{ form_row(champEncart.couleur) }}
+        {{ form_row(champEncart.encartCouleur) }}
+        {{ form_row(champEncart.position) }}
+    </div>
+
+{% endmacro %}
+
+{% macro VueChampEncart(champEncart) %}
+    
+    <div class="encart_border" id="{{ champEncart.encartCouleur.vars.id }}">
+        <div class="well encart" style="overflow: auto; background-color: {{ champEncart.couleur.vars.value }};" id="encart">
+            <div class="encart_couleur">
+                {% if champEncart.positionImage.vars.value == "droite" %}
+                    <div style="width: 50%; float: left; z-index: 1;">
+                {% else %}
+                    <div style="width: 50%; float: right; z-index: 1;">
+                {% endif %}
+                    <h1 class="ChampEncartTitre">{{ champEncart.champTexte.titre.vars.value }}</h1>
+                    <h2 class="ChampEncartSousTitre">{{ champEncart.champTexte.sousTitre.vars.value }}</h2>
+                    <div class="ChampEncartTexte ChampTexteTexte">{{ champEncart.champTexte.texte.vars.value|raw|nl2br }}</div>
+                    <p class="ChampEncartFin">{{ champEncart.champTexte.fin.vars.value }}</p>
+                </div>
+                {% if champEncart.positionImage.vars.value == "droite" %}
+                    <div style="width: 50%; float: right; z-index: 1;">
+                {% else %}
+                    <div style="width: 50%; float: left; z-index: 1;">
+                {% endif %}
+                    {% if champEncart.champImage.lien.vars.value == "" %}
+                        <img src="{{ asset('uploads/' ~ champEncart.champImage.image.vars.value) }}" style="margin-top: 50%; margin-bottom: 50%; width: 100%;">
+                    {% else %}
+                        <a target="_blank" href="{{ champEncart.champImage.lien.vars.value }}">
+                            <img src="{{ asset('uploads/' ~ champEncart.champImage.image.vars.value) }}" style="margin-top: 50%; margin-bottom: 50%; width: 100%;">
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style type="text/css">
+        #{{ champEncart.encartCouleur.vars.id }}:before{
+            background-color: {{ champEncart.encartCouleur.vars.value }};
+        }
+        #{{ champEncart.encartCouleur.vars.id }}:after{
+            background-color: {{ champEncart.encartCouleur.vars.value }};
+        }
+    </style>
+
+{% endmacro %}
+
+{% macro ChampEmbarque(champEmbarque) %}
+
+    <div class="js-genus-scientist-item">
+        <a href="#" class="js-remove-scientist btn btn-danger pull-right">
+            <span class="fa fa-close"></span>
+        </a>
+        {{ form_widget(champEmbarque.position.parent) }}
+    </div>
+
+{% endmacro %}
+
+{% macro VueChampEmbarque(champEmbarque) %}
+
+    <embed style="overflow: hidden; width: {{ champEmbarque.largeur.vars.value }}%;height: {{ champEmbarque.hauteur.vars.value }}px;" src="{{ champEmbarque.lien.vars.value }}" >
+
+{% endmacro %}

@@ -1,0 +1,26 @@
+{% extends 'base_error.html.twig' %}
+
+{% block title %}Page inconnue{% endblock %}
+
+{% block body %}
+	{{ parent() }}
+	<div id="content" class="content" style="text-align: center;">
+	    <div style="width: 90%; margin: 1%; float: right;" id="div_droite">
+		    <h1 style="color: #078cb5;">Page inconnue</h1>
+		    <h2>(Erreur 404)</h2>
+		    <div class="well">
+			    <p>
+			        La page demandée n'a pas pû être trouvée. Vérifiez qu'il n'y ait pas une erreur dans l'url
+			        ou <a href="{{ path('homepage', {'id': 1}) }}">retournez à la page d'acceuil</a>.
+			    </p>
+		    </div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}  
+	{{ parent() }} 
+{% endblock %}
+{% block stylesheets %}
+	{{ parent() }}
+{% endblock %}    

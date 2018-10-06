@@ -1,0 +1,57 @@
+<?php
+
+namespace BUBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * HoraireSalle
+ *
+ * @ORM\Table(name="horaire_salle", indexes={@ORM\Index(name="salle", columns={"salle"})})
+ * @ORM\Entity
+ */
+class HoraireSalle
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="jour", type="string", length=15, nullable=false)
+     */
+    private $jour;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="heure_ouverture", type="time", nullable=false)
+     */
+    private $heureOuverture;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="heure_fermeture", type="time", nullable=false)
+     */
+    private $heureFermeture;
+
+    /**
+     * @var \Salle
+     *
+     * @ORM\ManyToOne(targetEntity="Salle")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="salle", referencedColumnName="id")
+     * })
+     */
+    private $salle;
+
+
+}
+

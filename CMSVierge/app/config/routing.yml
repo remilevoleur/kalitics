@@ -1,0 +1,26 @@
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+homepage:
+  path:      /index/{id}
+  defaults:
+      _controller: AppBundle:Default:index
+  requirements:
+      id: \d+
+
+fichiers:
+  path:      /fichiers/{id}
+  defaults:
+      _controller: AppBundle:Default:fichiers
+  requirements:
+      id: \d*
+
+home:
+    path:      /
+    defaults:
+        _controller: AppBundle:Default:index
+        id:        1

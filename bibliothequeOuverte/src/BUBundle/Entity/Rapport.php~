@@ -1,0 +1,54 @@
+<?php
+
+namespace BUBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Rapport
+ *
+ * @ORM\Table(name="rapport")
+ * @ORM\Entity
+ */
+class Rapport
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom", type="string", length=255, nullable=false)
+     */
+    private $nom;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=255, nullable=false)
+     */
+    private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="frequence", type="string", length=255, nullable=false)
+     */
+    private $frequence;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="granularite", type="string", length=255, nullable=false)
+     */
+    private $granularite;
+
+
+}
+

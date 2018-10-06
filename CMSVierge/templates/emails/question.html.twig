@@ -1,0 +1,11 @@
+<h1>Question client :</h1>
+
+<p>{{ question | nl2br }}</p>
+
+<h1>Infos client :</h1>
+
+<p>Nom : {{ nom }}</p>
+<p>Prenom : {{ prenom }}</p>
+<p>E-mail : {{ mail }}</p>
+<p>Téléphone : {{ tel }}</p>
+<p>Date de la demande : {{ "now"|date('d-m-Y H:i:s') }} </p>

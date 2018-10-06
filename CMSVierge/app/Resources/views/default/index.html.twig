@@ -1,0 +1,311 @@
+{% extends 'base.html.twig' %}
+
+{% import "macros/macros.html.twig" as macros %}
+
+{% block title %}Technique PC{% endblock %}
+
+{% block body %}  
+    {{ parent() }} 
+    {% if page.page is not null %}
+        {% if date(page.page.site.message.datecachee) <= date() %}
+            {% if date(page.page.site.message.datecacheefin) >= date() %}
+                <div id="bandeau_message">
+                    <p style="background-color: {{ page.page.site.message.messageCouleur }}; padding: 5px;">
+                        {{ page.page.site.message.bandeauMessage }}
+                        {% if page.page.site.message.ancre != "" %}
+                            <a href="{{ path('homepage', {'id': page.page.site.message.ancre.id}) }}" target="_blank">
+                                En savoir plus ...
+                                <i class="glyphicon glyphicon-share-alt"></i>
+                            </a>
+                        {% endif %}  
+                        <button type="button" class="close" aria-label="Close" onclick="fermerBandeau()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </p>                     
+                </div>
+                <script type="text/javascript">
+                    if(document.cookie.indexOf('bandeau=') != -1)
+                        document.getElementById("bandeau_message").style.display = "none";
+                </script>
+            {% endif %}   
+        {% endif %}    
+    {% endif %}        
+
+    <div id="content" class="content" style="text-align: center;">
+
+        {% if is_granted('ROLE_ADMIN') %}
+            <div style="width: 25%; margin: 1%; float: right;" id="div_droite">
+        {% elseif form3.blocsDroite|length < 1 %}     
+            <div style="width: 0%; margin: 1%; float: right;" id="div_droite">
+        {% elseif form1.blocsCentre|length < 1 and form2.blocsGauche|length < 1 %}
+            <div style="width: 90%; margin: 1%; float: right;" id="div_droite">
+        {% elseif form1.blocsCentre|length > 0 and form2.blocsGauche|length > 0 %}
+            <div style="width: 25%; margin: 1%; float: right;" id="div_droite">
+        {% elseif form1.blocsCentre|length < 1 and form2.blocsGauche|length > 0 %}
+            <div style="width: 48%; margin: 1%; float: right;" id="div_droite">
+        {% else %}
+            <div style="width: 35%; margin: 1%; float: right;" id="div_droite">
+        {% endif %}
+            {{ form_start(form3) }}
+            {% form_theme form3 'bootstrap_3_layout.html.twig' %}
+            {% if is_granted('ROLE_ADMIN') %}
+                <ul class="droite" data-prototype="{{ macros.BlocDroite(form3.blocsDroite.vars.prototype)|e('html_attr') }}">
+                    <div class="js-genus-scientist-wrapper" id="droite">
+                        {% for bloc in form3.blocsDroite %}
+                            <div class="bloc_conteneur " id="{{ bloc.vars.id }}" style="display: none; position: relative;">
+                                {{ macros.BlocDroite(bloc) }}
+                            </div>
+
+                            <div id="{{ bloc.vars.id }}Vue" class="well" style="">                                
+                                {{ macros.BlocVue(bloc,pageActualite)}}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </ul>
+                <script type="text/javascript">selectHolders("#droite", $('<a href="#" class="add_blocs_link fa fa-plus-circle btn btn-info"> Bloc</a>'), 'ul.droite');</script> 
+            {% else %}
+                {% for bloc in form3.blocsDroite %}
+                    {{ macros.BlocVue(bloc,pageActualite) }}
+                {% endfor %}
+            {% do form3.Enregistrer.setRendered() %}
+            {% endif %}
+            {{ form_end(form3) }}
+        </div>
+
+        {% if is_granted('ROLE_ADMIN') %}
+            <div style="width: 45%; margin: 0 auto; margin-top: 1%; display: inline-block;" id="div_centre">
+        {% elseif form1.blocsCentre|length < 1 %}     
+            <div style="width: 0%; margin: 0 auto; margin-top: 1%; display: inline-block;" id="div_centre"> 
+        {% elseif form2.blocsGauche|length < 1 and form3.blocsDroite|length < 1 %}
+            <div style="width: 95%; margin: 0 auto; margin-top: 1%; display: inline-block;" id="div_centre"> 
+        {% elseif form2.blocsGauche|length > 0 and form3.blocsDroite|length > 0 %}
+            <div style="width: 45%; margin: 0 auto; margin-top: 1%; display: inline-block;" id="div_centre">
+        {% else %}
+            <div style="width: 60%; margin: 0 auto; margin-top: 1%; display: inline-block;" id="div_centre">
+        {% endif %}
+        {{ form_start(form1) }}
+        {% form_theme form1 'bootstrap_3_layout.html.twig' %} 
+        {% if is_granted('ROLE_ADMIN') %}
+            <ul class="centre" data-prototype="{{ macros.Bloc(form1.blocsCentre.vars.prototype)|e('html_attr') }}">
+                <div class="js-genus-scientist-wrapper" id="centre">
+                    {% for bloc in form1.blocsCentre %}
+                        <div class="bloc_conteneur " id="{{ bloc.vars.id }}" style="display: none; position: relative;">                            
+                            {{ macros.Bloc(bloc) }}
+                        </div>
+
+                        <div id="{{ bloc.vars.id }}Vue" class="well" style="">                            
+                            {{ macros.BlocVue(bloc,pageActualite)}}
+                        </div>
+                    {% endfor %}
+                </div>
+            </ul>
+            <script type="text/javascript">selectHolders("#centre", $('<a href="#" class="add_blocs_link fa fa-plus-circle btn btn-info"> Bloc</a>'), 'ul.centre');</script> 
+        {% else %}
+                {% for bloc in form1.blocsCentre %}                        
+                    {{ macros.BlocVue(bloc,pageActualite, "centre") }} 
+                {% endfor %} 
+        {% endif %} 
+        {% if is_granted('ROLE_ADMIN') == false %}
+            {% do form1.Enregistrer.setRendered() %} 
+        {% endif %}                             
+        {{ form_end(form1) }}
+        </div> 
+                    
+        {% if is_granted('ROLE_ADMIN') %}
+            <div style="width: 25%; margin: 1%; float: left;" id="div_gauche">
+        {% elseif form2.blocsGauche|length < 1 %}     
+            <div style="width: 0%; margin: 1%; float: left;" id="div_gauche">
+        {% elseif form1.blocsCentre|length < 1 and form3.blocsDroite|length < 1 %}
+            <div style="width: 90%; margin: 1%; float: left;" id="div_gauche">
+        {% elseif form1.blocsCentre|length > 0 and form3.blocsDroite|length > 0 %}
+            <div style="width: 25%; margin: 1%; float: left;" id="div_gauche">
+        {% elseif form1.blocsCentre|length < 1 and form3.blocsDroite|length > 0 %}
+            <div style="width: 48%; margin: 1%; float: left;" id="div_gauche">
+        {% else %}
+            <div style="width: 35%; margin: 1%; float: left;" id="div_gauche">
+        {% endif %}             
+        {{ form_start(form2) }}
+        {% form_theme form2 'bootstrap_3_layout.html.twig' %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <ul class="gauche" data-prototype="{{ macros.BlocGauche(form2.blocsGauche.vars.prototype)|e('html_attr') }}">
+                <div class="js-genus-scientist-wrapper" id="gauche">
+                    {% for bloc in form2.blocsGauche %}
+                        <div class="bloc_conteneur " id="{{ bloc.vars.id }}" style="display: none; position: relative;">                            
+                            {{ macros.BlocGauche(bloc) }}
+                        </div>
+
+                        <div id="{{ bloc.vars.id }}Vue" class="well" style="">                            
+                            {{ macros.BlocVue(bloc,pageActualite)}}
+                        </div>
+                    {% endfor %}
+                </div>
+            </ul>
+            <script type="text/javascript">selectHolders("#gauche", $('<a href="#" class="add_blocs_link fa fa-plus-circle btn btn-info"> Bloc</a>'), 'ul.gauche');</script> 
+        {% else %}
+            {% for bloc in form2.blocsGauche %}                        
+                {{ macros.BlocVue(bloc,pageActualite) }}                               
+            {% endfor %}  
+            {% do form2.Enregistrer.setRendered() %}              
+        {% endif %}            
+        {{ form_end(form2) }}
+        </div>  
+
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="well" style="width: 80%; display: inline-block;">
+                <h1 style="color: #078cb5;">BackGround de la page</h1>
+                <div class="dropzone" id="bg"></div>
+                {% if page.background != "" %}
+                    <div style="position: relative; width: 15%; display: inline-block; margin: 10px">                
+                        <a href="{{ path('deletephoto', {'id': page.id}) }}" class="btn btn-primary btn-sm">          
+                        <img class="photo" src="{{ asset('uploads/' ~ page.background) }}" width="100%" height="100%" title="Supprimer">
+                        <i class="glyphicon glyphicon-remove" style="color: red; position: absolute; right: auto; top: 0;"></i>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>  
+
+            {% if page.libelle != "Accueil" %}
+                <div class="well" style="width: 80%; display: inline-block;">
+                    <h1 style="color: #078cb5;">Supprimer la page</h1>
+                    <a href="{{ path('supprimer_page', {'id': page.id}) }}" onclick="return avertissement()" class="btn btn-danger btn-lg">
+                      Supprimer
+                    </a>
+                    <script type="text/javascript">
+                      function avertissement(){
+                        return confirm("Etes-vous vraiment sûr de vouloir supprimer cette page ?");
+                      }
+                    </script>                
+                </div>
+            {% endif %}          
+        {% endif %}            
+
+    </div> 
+    
+    <script type="text/javascript">
+
+    supprimer();      
+            
+        Dropzone.autoDiscover = false;
+        var dropzone_default = new Dropzone("#bg", {
+            url: '{{ path('fileuploadhandler', {'id': page.id}) }}' ,
+            acceptedFiles: 'image/*',
+            maxFilesize: 10,  // in Mb
+            init: function () {
+                this.on("maxfilesexceeded", function(file) {
+                    this.removeFile(file);
+                });
+                this.on("sending", function(file, xhr, formData) {
+                    // send additional data with the file as POST data if needed.
+                    // formData.append("key", "value");  
+                });
+                this.on("success", function(file, response) {
+                    if (response.uploaded)
+                        alert('Background envoyé : ' + response.fileName);
+                });
+            }
+        });        
+
+    </script>   
+
+    <script type="text/javascript">
+        var tds = document.getElementsByClassName("ChampTexteTexte");
+        for (i = 0; i < tds.length; ++i) {
+            tds[i].innerHTML = tds[i].innerHTML.replace(/&nbsp;/g, " ");
+        }
+    </script>
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}       
+
+    <style type="text/css">
+      @font-face {
+          font-family: "Circe";
+          src: url({{ asset('fonts/Circe35.otf') }});
+        }
+        @font-face {
+          font-family: "Circe";
+          font-weight: bold;
+          src: url({{ asset('fonts/Circe-Bold.otf') }});
+        }
+        @font-face {
+          font-family: "Avenir";
+          src: url({{ asset('fonts/Avenir.otf') }});
+        }
+
+        body {
+            background-repeat: no-repeat;
+            background-position-x: center;
+            background-attachment: fixed;
+            background-size: cover;
+            {% if page.background is null %}
+                background-image: url({{ asset('uploads/' ~ bg) }});
+            {% else %}
+                background-image: url({{ asset('uploads/' ~ page.background) }});
+            {% endif %}
+        }        
+    </style>   
+
+{% endblock %}
+
+{% block footer %}
+{{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}   
+    
+    <script type="text/javascript">       
+
+    function htmlDecode(input){
+        var e = document.createElement('div');
+        e.innerHTML = input;
+        // handle case of empty input
+        return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+    }    
+
+    jQuery(document).ready(supprimer);
+
+    function titrePage(){
+        var gauche = document.getElementById("div_gauche");
+        var droite = document.getElementById("div_droite");
+        var centre = document.getElementById("div_centre");
+        var nextBlock = document.getElementById("titre_page");        
+        if(nextBlock){  
+            var marge = nextBlock.clientHeight;
+            gauche.style["margin-top"] = marge+"px";
+            droite.style["margin-top"] = marge+"px";
+            centre.style["margin-top"] = marge+"px";
+        }
+    }
+
+    function montrerCacher(div, bouton){
+        montrer = document.getElementById(div);
+        cacher = document.getElementById(div + "Vue");
+        boutonMontrer = document.getElementById("bouton_ok_" + div);
+        montrer.style["display"] = "block";
+        cacher.style["display"] = "none";
+        bouton.style["display"] = "none";
+        boutonMontrer.style["display"] = "block";
+    }
+
+    function cacherMontrer(div, bouton){
+        cacher = document.getElementById(div);
+        montrer = document.getElementById(div + "Vue");
+        boutonMontrer = document.getElementById("bouton_modifier_" + div);
+        montrer.style["display"] = "block";
+        cacher.style["display"] = "none";
+        bouton.style["display"] = "none";
+        boutonMontrer.style["display"] = "block";
+    }    
+
+    function fermerBandeau(){
+        document.cookie = "bandeau=false";
+        document.getElementById("bandeau_message").style.display = "none";
+    }
+          
+    </script>
+
+{% endblock %}
+

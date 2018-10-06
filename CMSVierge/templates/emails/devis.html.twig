@@ -1,0 +1,23 @@
+<h1>Formulation des besoins du client :</h1>
+
+<p>{{ devis | nl2br }}</p>
+
+<h1>Infos client :</h1>
+
+<p>Nom : {{ nom }}</p>
+<p>Prenom : {{ prenom }}</p>
+<p>E-mail : {{ mail }}</p>
+<p>Téléphone : {{ tel }}</p>
+<p>Date de la demande : {{ "now"|date('d-m-Y H:i:s') }} </p>
+
+<h2>Créneau horaire de disponibilité du client :</h2>
+
+{% set i = 0 %}
+{% for creneau in creneaux %}
+	{% set i = i + 1 %}
+	{% if i is divisible by(2)  %}
+		{{ creneau }}</p>
+	{% else %}
+		<p>{{ creneau }} - 
+	{% endif %}
+{% endfor %}

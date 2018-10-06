@@ -1,0 +1,49 @@
+{% extends 'defaultMenuBar.html.twig' %}
+{% block title %}
+    Bibliothèque Ouverte - Réservation
+{% endblock %}
+
+{%  block body %}
+<div class="row" >
+    <div class="col-sm-12 col-lg-12 col-md-12" style="text-align: center;background-size:100% auto ">
+        <img class="photoBiblio img-responsive" src="st-charles.jpg" height="200px" width="1400px" >
+            <h1> {{ nomBibliotheque }}</h1>
+    </div>
+</div>
+    <hr class="separateur">
+    <div class="separation" style="text-align: center;">
+        <form>
+            <table align="center" cellspacing="10">
+                <tr>
+                    <td>DATE</td>
+                    <td>HEURE</td>
+                    <td>DUREE</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="date" name="dateReservation">
+                    </td>
+                    <td>
+                        <select class="form-control" name="heureReservation">
+                            <option> 08:30
+                            <option> 09:00
+                            <option> 09:30
+                            <option> 10:00
+                            <option> 10:30
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="dureeReservation">
+                            <option> 00:30
+                            <option> 01:00
+                            <option> 01:30
+                            <option> 02:00
+                            <option> 02:30
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <button class="btn btn-primary">Réserver</button>
+        </form>
+    </div>
+{% endblock %}

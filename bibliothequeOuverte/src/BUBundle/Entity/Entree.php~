@@ -1,0 +1,43 @@
+<?php
+
+namespace BUBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Entree
+ *
+ * @ORM\Table(name="entree", indexes={@ORM\Index(name="bibliotheque", columns={"bibliotheque"})})
+ * @ORM\Entity
+ */
+class Entree
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="datetime", nullable=false)
+     */
+    private $date;
+
+    /**
+     * @var \Bibliotheque
+     *
+     * @ORM\ManyToOne(targetEntity="Bibliotheque")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="bibliotheque", referencedColumnName="id")
+     * })
+     */
+    private $bibliotheque;
+
+
+}
+

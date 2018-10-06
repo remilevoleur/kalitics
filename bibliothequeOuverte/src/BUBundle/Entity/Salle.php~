@@ -1,0 +1,145 @@
+<?php
+
+namespace BUBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Salle
+ *
+ * @ORM\Table(name="salle")
+ * @ORM\Entity
+ */
+class Salle
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom", type="string", length=255, nullable=false)
+     */
+    private $nom;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="capacite", type="integer", nullable=false)
+     */
+    private $capacite;
+
+    /**
+     * @var time
+     *
+     * @ORM\Column(name="granularite", type="time", nullable=false)
+     */
+    private $granularite;
+
+    /**
+     * @var time
+     *
+     * @ORM\Column(name="duree_max", type="time", nullable=false)
+     */
+    private $duree_max;
+
+    /**
+     * @var \Bibliotheque
+     *
+     * @ORM\ManyToOne(targetEntity="Bibliotheque", inversedBy="salles")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="bibliotheque_id", referencedColumnName="id")
+     * })
+     */
+    private $bibliotheque;
+
+
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set nom
+     *
+     * @param string $nom
+     *
+     * @return Salle
+     */
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    /**
+     * Get nom
+     *
+     * @return string
+     */
+    public function getNom()
+    {
+        return $this->nom;
+    }
+
+    /**
+     * Set capacite
+     *
+     * @param integer $capacite
+     *
+     * @return Salle
+     */
+    public function setCapacite($capacite)
+    {
+        $this->capacite = $capacite;
+        
+        return $this;
+    }
+
+    /**
+     * Get capacite
+     *
+     * @return integer
+     */
+    public function getCapacite()
+    {
+        return $this->capacite;
+    }
+
+    /**
+     * Set bibliotheque
+     *
+     * @param integer $bibliotheque
+     *
+     * @return Salle
+     */
+    public function setBibliotheque($bibliotheque)
+    {
+        $this->bibliotheque = $bibliotheque;
+
+        return $this;
+    }
+
+    /**
+     * Get bibliotheque
+     *
+     * @return integer
+     */
+    public function getBibliotheque()
+    {
+        return $this->bibliotheque;
+    }
+}

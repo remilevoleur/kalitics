@@ -1,0 +1,64 @@
+<?php
+
+namespace BUBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Utilisateur
+ *
+ * @ORM\Table(name="utilisateur", indexes={@ORM\Index(name="role", columns={"role"})})
+ * @ORM\Entity
+ */
+class Utilisateur
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255, nullable=false)
+     */
+    private $email;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom", type="string", length=255, nullable=false)
+     */
+    private $nom;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="prenom", type="string", length=255, nullable=false)
+     */
+    private $prenom;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mot_de_passe", type="string", length=255, nullable=false)
+     */
+    private $motDePasse;
+
+    /**
+     * @var \Role
+     *
+     * @ORM\ManyToOne(targetEntity="Role")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="role", referencedColumnName="id")
+     * })
+     */
+    private $role;
+
+
+}
+
